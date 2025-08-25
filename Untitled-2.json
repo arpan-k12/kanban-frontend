@@ -1,0 +1,36 @@
+{
+  "id": "5af088d3-47e1-419a-ae7d-f8413abc93ec",
+  "column_id": "064cf3fc-8314-44b2-a906-9f0efe302708",
+  "customer_id": "b7be6f9f-6828-47f5-a110-9f66722d40e3",
+  "inquiry_id": "15aeab05-1a1c-4943-95a1-85186a80067d",
+  "assigned_to": "fa5e164d-6299-4d40-9ef6-783f28b68249",
+  "summary": "What grade of steel?",
+  "createdAt": "2025-08-22T10:30:46.903Z",
+  "updatedAt": "2025-08-25T10:32:30.163Z",
+  "deletedAt": null,
+  "column": {
+    "id": "064cf3fc-8314-44b2-a906-9f0efe302708",
+    "name": "Decision",
+    "position": 4,
+    "createdAt": "2025-08-22T06:42:46.767Z",
+    "updatedAt": "2025-08-22T06:42:46.767Z",
+    "deletedAt": null
+  },
+  "inquiry": {
+    "id": "15aeab05-1a1c-4943-95a1-85186a80067d",
+    "customer_id": "b7be6f9f-6828-47f5-a110-9f66722d40e3",
+    "commodity": "silver2",
+    "budget": "2000002",
+    "createdAt": "2025-08-22T10:30:46.882Z",
+    "updatedAt": "2025-08-22T11:04:27.779Z",
+    "deletedAt": null
+  },
+  "customer": {
+    "id": "b7be6f9f-6828-47f5-a110-9f66722d40e3",
+    "c_name": "customer1",
+    "c_email": "test@gmail.com",
+    "createdAt": "2025-08-21T12:44:35.002Z",
+    "updatedAt": "2025-08-21T12:44:35.002Z",
+    "deletedAt": null
+  }
+}
