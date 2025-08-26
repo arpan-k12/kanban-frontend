@@ -1,30 +1,18 @@
 import React, { useState } from "react";
 import { useDraggable } from "@dnd-kit/core";
 import type { CardData } from "../../types/card.type";
-import Position1Card from "../cards/Position1Card";
-import Position2Card from "../cards/Position2Card";
+import InquiryCard from "../cards/InquiryCard";
+import SummaryCard from "../cards/SummaryCard";
+import QuoteCard from "../cards/QuoteCard";
+import DecisionCard from "../cards/DecisionCard";
 
 interface CardProps {
   cardData: CardData;
+  reloadCards: () => void;
 }
-const Card: React.FC<CardProps> = ({ cardData }) => {
-  const {
-    id,
-    column_id,
-    customer_id,
-    inquiry_id,
-    assigned_to,
-    summary,
-    createdAt,
-    updatedAt,
-    deletedAt,
-    column,
-    inquiry,
-    customer,
-  } = cardData;
+const Card: React.FC<CardProps> = ({ cardData, reloadCards }) => {
+  const { id, column } = cardData;
   const [isEditing, setIsEditing] = useState(false);
-
-  console.log(cardData, "card");
 
   const { attributes, listeners, setNodeRef, transform, isDragging } =
     useDraggable({
@@ -42,22 +30,41 @@ const Card: React.FC<CardProps> = ({ cardData }) => {
       {...listeners}
       {...attributes}
       style={style}
+      id={id}
       className={`bg-white rounded-lg shadow-md p-3 cursor-grab ${
         isDragging ? "opacity-50" : "opacity-100"
       }`}
     >
       {column.position === 1 && (
-        <Position1Card
+        <InquiryCard
           cardData={cardData}
           isEditing={isEditing}
           setIsEditing={setIsEditing}
+          reloadCards={reloadCards}
         />
       )}
       {column.position === 2 && (
-        <Position2Card
+        <SummaryCard
           cardData={cardData}
           isEditing={isEditing}
           setIsEditing={setIsEditing}
+          reloadCards={reloadCards}
+        />
+      )}
+      {column.position === 3 && (
+        <QuoteCard
+          cardData={cardData}
+          isEditing={isEditing}
+          setIsEditing={setIsEditing}
+          reloadCards={reloadCards}
+        />
+      )}
+      {column.position === 4 && (
+        <DecisionCard
+          cardData={cardData}
+          isEditing={isEditing}
+          setIsEditing={setIsEditing}
+          reloadCards={reloadCards}
         />
       )}
     </div>

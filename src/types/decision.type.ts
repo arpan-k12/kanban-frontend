@@ -1,7 +1,7 @@
-export interface ColumnType {
+export interface Decision {
   id: string;
-  name: string;
-  position: number;
+  decision: string;
+  reason: string;
   createdAt: string;
   updatedAt: string;
   deletedAt: string | null;

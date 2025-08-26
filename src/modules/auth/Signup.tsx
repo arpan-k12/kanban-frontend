@@ -1,12 +1,17 @@
 import { useState } from "react";
 import { signupUser } from "../../api/auth.api";
 import { useNavigate, Link } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 
 export default function Signup() {
   const navigate = useNavigate();
+
+  const { login } = useAuth();
+
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -15,9 +20,15 @@ export default function Signup() {
       setError("All fields are required");
       return;
     }
+    if (password !== confirmPassword) {
+      setError("Passwords do not match");
+      return;
+    }
+
     try {
-      await signupUser(username, email, password);
-      navigate("/login");
+      const data = await signupUser(username, email, password, confirmPassword);
+      login(data?.data, data?.token);
+      navigate("/board");
     } catch (err: any) {
       setError(err.response?.data?.message || "Signup failed");
     }
@@ -51,6 +62,13 @@ export default function Signup() {
           className="w-full p-2 border rounded mb-3"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+        />
+        <input
+          type="password"
+          placeholder="Confirm Password"
+          className="w-full p-2 border rounded mb-3"
+          value={confirmPassword}
+          onChange={(e) => setConfirmPassword(e.target.value)}
         />
         <button
           type="submit"

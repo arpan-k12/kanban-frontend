@@ -1,19 +1,24 @@
-import React, { useState } from "react";
+import React from "react";
 import type { CardData } from "../../types/card.type";
 import CardEditor from "./CardEditor";
+import { updateCustomer } from "../../api/customerAPI";
+import { updateInquiry } from "../../api/inquiryAPI";
+import { Pencil } from "lucide-react";
 
 interface Props {
   cardData: CardData;
   isEditing: boolean;
   setIsEditing: (isEditing: boolean) => void;
+  reloadCards: () => void;
 }
 
-const Position1Card: React.FC<Props> = ({
+const InquiryCard: React.FC<Props> = ({
   cardData,
   isEditing,
   setIsEditing,
+  reloadCards,
 }) => {
-  const { customer, inquiry } = cardData;
+  const { customer_id, customer, inquiry } = cardData;
 
   if (isEditing) {
     return (
@@ -25,9 +30,14 @@ const Position1Card: React.FC<Props> = ({
           budget: inquiry?.budget || "",
         }}
         onSave={async (updated: any) => {
-          // await updateCustomerApi(cardData.customer_id, updated);
-          // await updateInquiryApi(cardData.inquiry_id, updated);
-          console.log("Save Position1 data:", updated);
+          await updateCustomer(customer_id, updated.c_name, updated.c_email);
+          await updateInquiry(
+            inquiry?.id,
+            customer_id,
+            updated?.commodity,
+            updated?.budget
+          );
+          await reloadCards();
           setIsEditing(false);
         }}
         onCancel={() => setIsEditing(false)}
@@ -36,7 +46,17 @@ const Position1Card: React.FC<Props> = ({
   }
 
   return (
-    <div onDoubleClick={() => setIsEditing(true)}>
+    <div className="relative border rounded-md p-2 bg-white shadow-sm">
+      <button
+        onClick={() => setIsEditing(true)}
+        onMouseDown={(e) => e.stopPropagation()}
+        onPointerDown={(e) => e.stopPropagation()}
+        className="absolute top-2 right-2 text-gray-500 hover:text-blue-600 cursor-pointer"
+        aria-label="Edit inquiry"
+      >
+        <Pencil size={16} />
+      </button>
+
       <h3 className="text-sm font-semibold text-gray-700">
         {customer?.c_name}
       </h3>
@@ -55,4 +75,4 @@ const Position1Card: React.FC<Props> = ({
   );
 };
 
-export default Position1Card;
+export default InquiryCard;

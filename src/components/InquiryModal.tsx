@@ -39,6 +39,11 @@ const InquiryModal: React.FC<InquiryModalProps> = ({
         }
       };
       loadData();
+    } else {
+      setSelectedCustomer("");
+      setCommodity("");
+      setBudget("");
+      setError("");
     }
   }, [isOpen]);
 
@@ -62,7 +67,6 @@ const InquiryModal: React.FC<InquiryModalProps> = ({
       <div className="bg-white rounded-lg shadow-lg p-6 w-96 relative">
         <h2 className="text-lg font-semibold mb-4">Create New Card</h2>
 
-        {/* Customer Dropdown */}
         <select
           value={selectedCustomer}
           onChange={(e) => setSelectedCustomer(e.target.value)}
@@ -76,7 +80,6 @@ const InquiryModal: React.FC<InquiryModalProps> = ({
           ))}
         </select>
 
-        {/* Commodity Input */}
         <input
           type="text"
           placeholder="Commodity"
@@ -85,7 +88,6 @@ const InquiryModal: React.FC<InquiryModalProps> = ({
           className="w-full border rounded p-2 mb-4"
         />
 
-        {/* Budget Input */}
         <input
           type="text"
           placeholder="Budget"
@@ -94,10 +96,8 @@ const InquiryModal: React.FC<InquiryModalProps> = ({
           className="w-full border rounded p-2 mb-4"
         />
 
-        {/* Error message */}
         {error && <p className="text-red-500 text-sm mb-2">{error}</p>}
 
-        {/* Action Buttons */}
         <div className="flex justify-end gap-2">
           <button
             className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"

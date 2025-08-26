@@ -1,7 +1,7 @@
-export interface ColumnType {
+export interface Quote {
   id: string;
-  name: string;
-  position: number;
+  amount: number;
+  valid_until: string;
   createdAt: string;
   updatedAt: string;
   deletedAt: string | null;

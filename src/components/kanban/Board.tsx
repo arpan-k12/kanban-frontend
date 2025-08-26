@@ -1,32 +1,22 @@
 import React, { useEffect, useState } from "react";
-import { DndContext } from "@dnd-kit/core";
+import {
+  DndContext,
+  MouseSensor,
+  TouchSensor,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
 import Column from "./Column";
-import { fetchKanbanColumns } from "../../api/kanbanColumnApi";
-import { fetchCards, moveCard } from "../../api/cardApi";
+import { fetchKanbanColumns } from "../../api/kanbanColumnAPI";
+import { fetchCards, moveCard } from "../../api/cardAPI";
 import InquiryModal from "../InquiryModal";
 import { createInquiryCard } from "../../api/inquiryAPI";
-
-interface ColumnType {
-  id: string;
-  name: string;
-  position: number;
-}
-
-interface CardType {
-  id: string;
-  column_id: string;
-  summary?: string;
-  customer?: {
-    c_name: string;
-    c_email: string;
-    commodity?: string;
-    budget?: string;
-  };
-}
+import type { ColumnType } from "../../types/column.type";
+import type { CardData } from "../../types/card.type";
 
 const Board: React.FC = () => {
   const [columns, setColumns] = useState<ColumnType[]>([]);
-  const [cards, setCards] = useState<CardType[]>([]);
+  const [cards, setCards] = useState<CardData[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const loadCards = async () => {
@@ -39,7 +29,7 @@ const Board: React.FC = () => {
   };
 
   useEffect(() => {
-    const loadData = async () => {
+    const loadColumns = async () => {
       try {
         const cols = await fetchKanbanColumns();
         setColumns(cols.sort((a: any, b: any) => a.position - b.position));
@@ -50,7 +40,7 @@ const Board: React.FC = () => {
       }
     };
 
-    loadData();
+    loadColumns();
   }, []);
 
   const handleDragEnd = async (event: any) => {
@@ -68,8 +58,7 @@ const Board: React.FC = () => {
 
     if (!oldColumn || !newColumn) return;
 
-    if (newColumn.position < oldColumn.position) {
-      console.log("You can't move card backwards!");
+    if (newColumn.position !== oldColumn.position + 1) {
       return;
     }
 
@@ -85,9 +74,6 @@ const Board: React.FC = () => {
     );
 
     try {
-      console.log(`Moving card ${cardId} to column ${newColumnId} }`);
-      console.log(cardId, newColumnId);
-
       await moveCard(cardId, newColumnId);
       await loadCards();
     } catch (err) {
@@ -112,8 +98,16 @@ const Board: React.FC = () => {
     }
   };
 
+  const mouseSensor = useSensor(MouseSensor, {
+    activationConstraint: { distance: 6 },
+  });
+  const touchSensor = useSensor(TouchSensor, {
+    activationConstraint: { delay: 150, tolerance: 5 },
+  });
+  const sensors = useSensors(mouseSensor, touchSensor);
+
   return (
-    <DndContext onDragEnd={handleDragEnd}>
+    <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
       <div className="flex justify-between items-center px-6 py-4">
         <h1 className="text-xl font-bold">Kanban Board</h1>
         <button
@@ -131,6 +125,7 @@ const Board: React.FC = () => {
             id={col.id}
             name={col.name}
             cards={cards.filter((c) => c.column_id === col.id)}
+            reloadCards={loadCards}
           />
         ))}
       </div>

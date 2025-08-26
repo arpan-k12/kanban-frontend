@@ -5,8 +5,8 @@ export const fetchCards = async () => {
   return response.data.data;
 };
 
-export const updateCard = async (id: string, updates: any) => {
-  const response = await api.patch(`/cards/${id}`, updates);
+export const updateCard = async (id: string, summary: string) => {
+  const response = await api.patch(`/card/summary/${id}`, { summary });
   return response.data.data;
 };
 
