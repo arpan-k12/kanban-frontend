@@ -4,6 +4,8 @@ import Login from "../modules/auth/Login";
 import Signup from "../modules/auth/Signup";
 import Board from "../pages/boardPage";
 import type { ReactElement } from "react";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const ProtectedRoute = ({ children }: { children: ReactElement }) => {
   const { token } = useAuth();
@@ -13,6 +15,18 @@ const ProtectedRoute = ({ children }: { children: ReactElement }) => {
 export default function AppRoutes() {
   return (
     <BrowserRouter>
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={true}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+      />
       <Routes>
         <Route path="/" element={<Navigate to="/login" />} />
         <Route path="/login" element={<Login />} />

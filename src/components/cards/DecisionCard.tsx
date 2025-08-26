@@ -1,8 +1,5 @@
 import React from "react";
-import CardEditor from "./CardEditor";
 import type { CardData } from "../../types/card.type";
-import { createDecision, updateDecision } from "../../api/decisionAPI";
-import { Pencil } from "lucide-react";
 
 interface Props {
   cardData: CardData;
@@ -17,40 +14,43 @@ const DecisionCard: React.FC<Props> = ({
   setIsEditing,
   reloadCards,
 }) => {
-  const decision = cardData?.decision;
-  if (isEditing) {
-    return (
-      <CardEditor
-        initialData={{
-          decision: decision?.decision || "",
-          reason: decision?.reason || "",
-        }}
-        onSave={async (updated) => {
-          if (decision?.id) {
-            await updateDecision(decision.id, {
-              decision: updated.decision,
-              reason: updated.reason,
-            });
-          } else {
-            await createDecision({
-              card_id: cardData.id,
-              decision: updated.decision,
-              reason: updated.reason,
-            });
-          }
+  const { customer, inquiry, quote, decision } = cardData;
 
-          await reloadCards();
-          setIsEditing(false);
-        }}
-        onCancel={() => setIsEditing(false)}
-        type="decision"
-      />
-    );
-  }
+  // if (isEditing) {
+  //   return (
+  //     <CardEditor
+  //       initialData={{
+  //         decision: decision?.decision || "",
+  //         reason: decision?.reason || "",
+  //       }}
+  //       onSave={async (updated) => {
+  //         if (decision?.id) {
+  //           await updateDecision(decision.id, {
+  //             decision: updated.decision,
+  //             reason: updated.reason,
+  //           });
+  //           toast.success("Decision Updated successfully!");
+  //         } else {
+  //           await createDecision({
+  //             card_id: cardData.id,
+  //             decision: updated.decision,
+  //             reason: updated.reason,
+  //           });
+  //           toast.success("Decision Created successfully!");
+  //         }
+
+  //         await reloadCards();
+  //         setIsEditing(false);
+  //       }}
+  //       onCancel={() => setIsEditing(false)}
+  //       type="decision"
+  //     />
+  //   );
+  // }
 
   return (
     <div className="relative border rounded-md p-2 bg-white shadow-sm">
-      <button
+      {/* <button
         onClick={() => setIsEditing(true)}
         onMouseDown={(e) => e.stopPropagation()}
         onPointerDown={(e) => e.stopPropagation()}
@@ -58,9 +58,32 @@ const DecisionCard: React.FC<Props> = ({
         aria-label="Edit inquiry"
       >
         <Pencil size={16} />
-      </button>
-      {decision ? (
+      </button> */}
+      <h3 className="text-sm font-semibold text-gray-700">
+        {customer?.c_name}
+      </h3>
+      <p className="text-xs text-gray-500">{customer?.c_email}</p>
+      {inquiry?.commodity && (
+        <p className="text-xs text-gray-600">
+          <span className="font-medium">Commodity:</span> {inquiry?.commodity}
+        </p>
+      )}
+      {inquiry?.budget && (
+        <p className="text-xs text-gray-600">
+          <span className="font-medium">Budget:</span> {inquiry?.budget}
+        </p>
+      )}
+      {cardData?.summary && (
+        <p className="mt-1 text-xs text-gray-600">
+          <span className="font-medium">Summary:</span> {cardData?.summary}
+        </p>
+      )}
+      {decision && (
         <div>
+          <p className="mt-1 text-xs text-gray-600">
+            <span className="font-medium">Decision:</span>
+          </p>
+
           {decision.decision === "pass" ? (
             <span className="px-2 py-1 bg-green-100 text-green-700 rounded text-xs">
               ✅ Passed
@@ -71,11 +94,11 @@ const DecisionCard: React.FC<Props> = ({
             </span>
           )}
           {decision.reason && (
-            <p className="mt-1 text-gray-600 italic">{decision.reason}</p>
+            <p className="mt-1 text-xs text-gray-600 italic">
+              <span className="font-medium">Reason:</span> {decision.reason}
+            </p>
           )}
         </div>
-      ) : (
-        <p className="text-xs italic text-gray-400">No decision yet</p>
       )}
     </div>
   );

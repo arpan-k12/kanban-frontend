@@ -29,7 +29,7 @@ const CardEditor: React.FC<Props> = ({
             <button
               type="button"
               onClick={() => setFormData({ ...formData, decision: "pass" })}
-              className={`px-3 py-1 rounded text-xs ${
+              className={`px-3 py-1 rounded text-xs cursor-pointer ${
                 formData.decision === "pass"
                   ? "bg-green-500 text-white"
                   : "bg-gray-200"
@@ -40,7 +40,7 @@ const CardEditor: React.FC<Props> = ({
             <button
               type="button"
               onClick={() => setFormData({ ...formData, decision: "fail" })}
-              className={`px-3 py-1 rounded text-xs ${
+              className={`px-3 py-1 rounded text-xs cursor-pointer ${
                 formData.decision === "fail"
                   ? "bg-red-500 text-white"
                   : "bg-gray-200"

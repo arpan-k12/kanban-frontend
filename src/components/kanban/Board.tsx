@@ -13,6 +13,7 @@ import InquiryModal from "../InquiryModal";
 import { createInquiryCard } from "../../api/inquiryAPI";
 import type { ColumnType } from "../../types/column.type";
 import type { CardData } from "../../types/card.type";
+import { toast } from "react-toastify";
 
 const Board: React.FC = () => {
   const [columns, setColumns] = useState<ColumnType[]>([]);
@@ -25,6 +26,7 @@ const Board: React.FC = () => {
       setCards(allCards);
     } catch (error) {
       console.error("Failed to fetch cards:", error);
+      toast.error("Something went wrong!");
     }
   };
 
@@ -37,6 +39,7 @@ const Board: React.FC = () => {
         await loadCards();
       } catch (error) {
         console.error("Failed to fetch board data:", error);
+        toast.error("Something went wrong!");
       }
     };
 
@@ -76,8 +79,10 @@ const Board: React.FC = () => {
     try {
       await moveCard(cardId, newColumnId);
       await loadCards();
+      toast.success("Card moved successfully!");
     } catch (err) {
       console.error("Failed to update card:", err);
+      toast.error("Failed to move card!");
     }
   };
 
@@ -92,9 +97,11 @@ const Board: React.FC = () => {
         commodity: data.commodity,
         budget: data.budget,
       });
+      toast.success("Card Created successfully!");
       await loadCards();
     } catch (error) {
       console.error("Failed to add card:", error);
+      toast.error("Something went wrong!!");
     }
   };
 

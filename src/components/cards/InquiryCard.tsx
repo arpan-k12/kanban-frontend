@@ -1,9 +1,9 @@
 import React from "react";
 import type { CardData } from "../../types/card.type";
 import CardEditor from "./CardEditor";
-import { updateCustomer } from "../../api/customerAPI";
-import { updateInquiry } from "../../api/inquiryAPI";
 import { Pencil } from "lucide-react";
+import { toast } from "react-toastify";
+import { updateCard } from "../../api/cardAPI";
 
 interface Props {
   cardData: CardData;
@@ -18,32 +18,7 @@ const InquiryCard: React.FC<Props> = ({
   setIsEditing,
   reloadCards,
 }) => {
-  const { customer_id, customer, inquiry } = cardData;
-
-  if (isEditing) {
-    return (
-      <CardEditor
-        initialData={{
-          c_name: customer?.c_name || "",
-          c_email: customer?.c_email || "",
-          commodity: inquiry?.commodity || "",
-          budget: inquiry?.budget || "",
-        }}
-        onSave={async (updated: any) => {
-          await updateCustomer(customer_id, updated.c_name, updated.c_email);
-          await updateInquiry(
-            inquiry?.id,
-            customer_id,
-            updated?.commodity,
-            updated?.budget
-          );
-          await reloadCards();
-          setIsEditing(false);
-        }}
-        onCancel={() => setIsEditing(false)}
-      />
-    );
-  }
+  const { customer, inquiry } = cardData;
 
   return (
     <div className="relative border rounded-md p-2 bg-white shadow-sm">
@@ -56,7 +31,6 @@ const InquiryCard: React.FC<Props> = ({
       >
         <Pencil size={16} />
       </button>
-
       <h3 className="text-sm font-semibold text-gray-700">
         {customer?.c_name}
       </h3>
@@ -70,6 +44,45 @@ const InquiryCard: React.FC<Props> = ({
         <p className="text-xs text-gray-600">
           <span className="font-medium">Budget:</span> {inquiry?.budget}
         </p>
+      )}
+      {cardData?.summary && !isEditing && (
+        <p className="mt-1 text-xs text-gray-600">
+          <span className="font-medium">Summary:</span> {cardData?.summary}
+        </p>
+      )}
+      <br />
+      {isEditing && (
+        // <CardEditor
+        //   initialData={{
+        //     c_name: customer?.c_name || "",
+        //     c_email: customer?.c_email || "",
+        //     commodity: inquiry?.commodity || "",
+        //     budget: inquiry?.budget || "",
+        //   }}
+        //   onSave={async (updated: any) => {
+        //     await updateCustomer(customer_id, updated.c_name, updated.c_email);
+        //     await updateInquiry(
+        //       inquiry?.id,
+        //       customer_id,
+        //       updated?.commodity,
+        //       updated?.budget
+        //     );
+        //     await reloadCards();
+        //     toast.success("Inquiry Updated successfully!");
+        //     setIsEditing(false);
+        //   }}
+        //   onCancel={() => setIsEditing(false)}
+        // />
+        <CardEditor
+          initialData={{ summary: cardData.summary || "" }}
+          onSave={async (updated) => {
+            await updateCard(cardData.id, updated.summary);
+            await reloadCards();
+            toast.success("Inquiry Updated successfully!");
+            setIsEditing(false);
+          }}
+          onCancel={() => setIsEditing(false)}
+        />
       )}
     </div>
   );
