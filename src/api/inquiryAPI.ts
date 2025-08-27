@@ -1,24 +1,23 @@
+import type { Inquiry } from "../types/inquiry.type";
 import api from "./index";
 
-export const createInquiryCard = (data: {
+export const createInquiryCard = async (data: {
   customer_id: string;
   commodity: string;
-  budget: string;
-}) => {
-  return api.post("/inquiry", data).then((res) => res.data);
+  budget: number;
+}): Promise<Inquiry> => {
+  const response = await api.post<{ data: Inquiry }>("/inquiry", data);
+  return response.data.data;
 };
 
-export const updateInquiry = (
+export const updateInquiry = async (
   id: string,
-  customer_id: string,
-  commodity: string,
-  budget: number
-) => {
-  return api
-    .patch(`/inquiry/${id}`, {
-      customer_id,
-      commodity,
-      budget,
-    })
-    .then((res) => res.data);
+  data: {
+    customer_id: string;
+    commodity: string;
+    budget: number;
+  }
+): Promise<Inquiry> => {
+  const response = await api.patch<{ data: Inquiry }>(`/inquiry/${id}`, data);
+  return response.data.data;
 };

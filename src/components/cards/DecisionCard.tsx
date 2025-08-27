@@ -1,5 +1,9 @@
 import React from "react";
 import type { CardData } from "../../types/card.type";
+import { Pencil } from "lucide-react";
+import CardEditor from "./CardEditor";
+import { createDecision, updateDecision } from "../../api/decisionAPI";
+import { showSuccess } from "../../utils/toastUtils";
 
 interface Props {
   cardData: CardData;
@@ -14,7 +18,7 @@ const DecisionCard: React.FC<Props> = ({
   setIsEditing,
   reloadCards,
 }) => {
-  const { customer, inquiry, quote, decision } = cardData;
+  const { customer, inquiry, decision, quote } = cardData;
 
   // if (isEditing) {
   //   return (
@@ -50,15 +54,17 @@ const DecisionCard: React.FC<Props> = ({
 
   return (
     <div className="relative border rounded-md p-2 bg-white shadow-sm">
-      {/* <button
-        onClick={() => setIsEditing(true)}
-        onMouseDown={(e) => e.stopPropagation()}
-        onPointerDown={(e) => e.stopPropagation()}
-        className="absolute top-2 right-2 text-gray-500 hover:text-blue-600 cursor-pointer"
-        aria-label="Edit inquiry"
-      >
-        <Pencil size={16} />
-      </button> */}
+      {!decision && (
+        <button
+          onClick={() => setIsEditing(true)}
+          onMouseDown={(e) => e.stopPropagation()}
+          onPointerDown={(e) => e.stopPropagation()}
+          className="absolute top-2 right-2 text-gray-500 hover:text-blue-600 cursor-pointer"
+          aria-label="Edit inquiry"
+        >
+          <Pencil size={16} />
+        </button>
+      )}
       <h3 className="text-sm font-semibold text-gray-700">
         {customer?.c_name}
       </h3>
@@ -77,6 +83,12 @@ const DecisionCard: React.FC<Props> = ({
         <p className="mt-1 text-xs text-gray-600">
           <span className="font-medium">Summary:</span> {cardData?.summary}
         </p>
+      )}
+      {quote && (
+        <div className="mt-2 text-xs text-gray-800">
+          <div className="font-medium">💰 {quote.amount}</div>
+          <span>⏳ {new Date(quote.valid_until).toLocaleDateString()}</span>
+        </div>
       )}
       {decision && (
         <div>
@@ -99,6 +111,36 @@ const DecisionCard: React.FC<Props> = ({
             </p>
           )}
         </div>
+      )}
+
+      {isEditing && (
+        <CardEditor
+          initialData={{
+            decision: decision?.decision || "",
+            reason: decision?.reason || "",
+          }}
+          onSave={async (updated) => {
+            if (decision?.id) {
+              await updateDecision(decision.id, {
+                decision: updated.decision,
+                reason: updated.reason,
+              });
+              showSuccess("Decision Updated successfully");
+            } else {
+              await createDecision({
+                card_id: cardData.id,
+                decision: updated.decision,
+                reason: updated.reason,
+              });
+              showSuccess("Decision Created successfully");
+            }
+
+            await reloadCards();
+            setIsEditing(false);
+          }}
+          onCancel={() => setIsEditing(false)}
+          type="decision"
+        />
       )}
     </div>
   );

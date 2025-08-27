@@ -1,16 +1,19 @@
+import type { Quote } from "../types/quote.type";
 import api from "./index";
 
-export const createQuote = (data: {
+export const createQuote = async (data: {
   card_id: string;
   amount: number;
   valid_until: string;
-}) => {
-  return api.post(`/quote`, data);
+}): Promise<Quote> => {
+  const response = await api.post<{ data: Quote }>("/quote", data);
+  return response.data.data;
 };
 
-export const updateQuote = (
+export const updateQuote = async (
   quoteId: string,
   data: { amount: number; valid_until: string }
-) => {
-  return api.patch(`/quote/${quoteId}`, data);
+): Promise<Quote> => {
+  const response = await api.patch<{ data: Quote }>(`/quote/${quoteId}`, data);
+  return response.data.data;
 };

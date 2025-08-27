@@ -6,6 +6,7 @@ import Board from "../pages/boardPage";
 import type { ReactElement } from "react";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import NotFoundPage from "../pages/NotFoundPage";
 
 const ProtectedRoute = ({ children }: { children: ReactElement }) => {
   const { token } = useAuth();
@@ -39,6 +40,7 @@ export default function AppRoutes() {
             </ProtectedRoute>
           }
         />
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </BrowserRouter>
   );

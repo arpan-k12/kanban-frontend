@@ -14,6 +14,7 @@ import { createInquiryCard } from "../../api/inquiryAPI";
 import type { ColumnType } from "../../types/column.type";
 import type { CardData } from "../../types/card.type";
 import { toast } from "react-toastify";
+import { showError, showSuccess } from "../../utils/toastUtils";
 
 const Board: React.FC = () => {
   const [columns, setColumns] = useState<ColumnType[]>([]);
@@ -24,9 +25,9 @@ const Board: React.FC = () => {
     try {
       const allCards = await fetchCards();
       setCards(allCards);
-    } catch (error) {
-      console.error("Failed to fetch cards:", error);
-      toast.error("Something went wrong!");
+    } catch (error: any) {
+      console.log(error, "Failed to fetch cards:");
+      showError(error, "Failed to load cards");
     }
   };
 
@@ -49,25 +50,31 @@ const Board: React.FC = () => {
   const handleDragEnd = async (event: any) => {
     const { over, active } = event;
     if (!over || !active) return;
-
     const cardId = active.id as string;
     const newColumnId = over.id as string;
-
     const card = cards.find((c) => c.id === cardId);
     if (!card) return;
-
+    const position = card?.column?.position;
+    if (position === 1 && !card?.inquiry_id) {
+      toast.warning("Please fill the inquiry before moving this card!");
+      return;
+    }
+    if (position === 2 && !card?.summary) {
+      toast.warning("Please fill the summary before moving this card!");
+      return;
+    }
+    if (position === 3 && !card?.quote_id) {
+      toast.warning("Please attach a quote before moving this card!");
+      return;
+    }
     const oldColumn = columns.find((col) => col.id === card.column_id);
     const newColumn = columns.find((col) => col.id === newColumnId);
-
     if (!oldColumn || !newColumn) return;
-
     if (newColumn.position !== oldColumn.position + 1) {
       return;
     }
-
     const newCardsInColumn = cards.filter((c) => c.column_id === newColumnId);
     const newPosition = newCardsInColumn.length + 1;
-
     setCards((prev) =>
       prev.map((c) =>
         c.id === cardId
@@ -75,7 +82,6 @@ const Board: React.FC = () => {
           : c
       )
     );
-
     try {
       await moveCard(cardId, newColumnId);
       await loadCards();
@@ -89,7 +95,7 @@ const Board: React.FC = () => {
   const handleAddCard = async (data: {
     customerId: string;
     commodity: string;
-    budget: string;
+    budget: number;
   }) => {
     try {
       await createInquiryCard({
@@ -97,11 +103,11 @@ const Board: React.FC = () => {
         commodity: data.commodity,
         budget: data.budget,
       });
-      toast.success("Card Created successfully!");
+      showSuccess("Card Created successfully!");
       await loadCards();
     } catch (error) {
       console.error("Failed to add card:", error);
-      toast.error("Something went wrong!!");
+      showError(error, "Failed to Created card");
     }
   };
 

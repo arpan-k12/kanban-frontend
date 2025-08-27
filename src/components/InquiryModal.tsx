@@ -2,12 +2,7 @@ import React, { useEffect, useState } from "react";
 import { getAllCustomer } from "../api/customerAPI";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-
-interface Customer {
-  id: string;
-  c_name: string;
-  c_email: string;
-}
+import type { Customer } from "../types/customer.type";
 
 interface InquiryModalProps {
   isOpen: boolean;
@@ -15,7 +10,7 @@ interface InquiryModalProps {
   onAdd: (data: {
     customerId: string;
     commodity: string;
-    budget: string;
+    budget: number;
   }) => void;
 }
 
@@ -60,7 +55,10 @@ const InquiryModal: React.FC<InquiryModalProps> = ({
           initialValues={{ customerId: "", commodity: "", budget: "" }}
           validationSchema={validationSchema}
           onSubmit={(values, { resetForm }) => {
-            onAdd(values);
+            onAdd({
+              ...values,
+              budget: Number(values.budget),
+            });
             resetForm();
             onClose();
           }}

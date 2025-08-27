@@ -1,16 +1,22 @@
+import type { Decision } from "../types/decision.type";
 import api from "./index";
 
-export const createDecision = (data: {
+export const createDecision = async (data: {
   card_id: string;
   decision: string;
   reason: string;
-}) => {
-  return api.post(`/decision`, data);
+}): Promise<Decision> => {
+  const response = await api.post<{ data: Decision }>("/decision", data);
+  return response.data.data;
 };
 
-export const updateDecision = (
+export const updateDecision = async (
   decisionId: string,
   data: { decision: string; reason: string }
-) => {
-  return api.patch(`/decision/${decisionId}`, data);
+): Promise<Decision> => {
+  const response = await api.patch<{ data: Decision }>(
+    `/decision/${decisionId}`,
+    data
+  );
+  return response.data.data;
 };

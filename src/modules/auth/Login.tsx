@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import * as Yup from "yup";
 import { loginUser } from "../../api/auth.api";
 import { useAuth } from "../../context/AuthContext";
 import { useNavigate, Link } from "react-router-dom";
@@ -7,60 +8,86 @@ export default function Login() {
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!email || !password) {
-      setError("All fields are required");
-      return;
-    }
-    try {
-      const data = await loginUser(email, password);
-      login(data?.data, data?.token);
-      navigate("/board");
-    } catch (err: any) {
-      setError(err.response?.data?.message || "Login failed");
-    }
-  };
+  const validationSchema = Yup.object({
+    email: Yup.string()
+      .email("Invalid email address")
+      .required("Email is required"),
+    password: Yup.string()
+      .min(6, "Password must be at least 6 characters")
+      .required("Password is required"),
+  });
 
   return (
     <div className="flex items-center justify-center h-screen bg-gray-100">
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white p-6 rounded shadow-md w-96"
-      >
+      <div className="bg-white p-6 rounded shadow-md w-96">
         <h1 className="text-2xl font-bold mb-4">Login</h1>
-        {error && <p className="text-red-500 text-sm mb-2">{error}</p>}
-        <input
-          type="email"
-          placeholder="Email"
-          className="w-full p-2 border rounded mb-3"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          className="w-full p-2 border rounded mb-3"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <button
-          type="submit"
-          className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600"
+
+        <Formik
+          initialValues={{ email: "", password: "" }}
+          validationSchema={validationSchema}
+          onSubmit={async (values, { setSubmitting, setFieldError }) => {
+            try {
+              const data = await loginUser(values.email, values.password);
+              login(data.data, data.token);
+              navigate("/board");
+            } catch (err: any) {
+              setFieldError(
+                "general",
+                err.response?.data?.message || "Login failed"
+              );
+            } finally {
+              setSubmitting(false);
+            }
+          }}
         >
-          Sign In
-        </button>
-        <p className="text-sm mt-3">
-          Don't have an account?{" "}
-          <Link to="/signup" className="text-blue-600 hover:underline">
-            Signup
-          </Link>
-        </p>
-      </form>
+          {({ isSubmitting }) => (
+            <Form>
+              <div className="mb-3">
+                <Field
+                  type="email"
+                  name="email"
+                  placeholder="Email"
+                  className="w-full p-2 border rounded"
+                />
+                <ErrorMessage
+                  name="email"
+                  component="p"
+                  className="text-red-500 text-sm mt-1"
+                />
+              </div>
+
+              <div className="mb-3">
+                <Field
+                  type="password"
+                  name="password"
+                  placeholder="Password"
+                  className="w-full p-2 border rounded"
+                />
+                <ErrorMessage
+                  name="password"
+                  component="p"
+                  className="text-red-500 text-sm mt-1"
+                />
+              </div>
+
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600 disabled:opacity-50"
+              >
+                {isSubmitting ? "Signing in..." : "Sign In"}
+              </button>
+
+              <p className="text-sm mt-3">
+                Don't have an account?{" "}
+                <Link to="/signup" className="text-blue-600 hover:underline">
+                  Signup
+                </Link>
+              </p>
+            </Form>
+          )}
+        </Formik>
+      </div>
     </div>
   );
 }

@@ -2,8 +2,8 @@ import React from "react";
 import CardEditor from "./CardEditor";
 import type { CardData } from "../../types/card.type";
 import { Pencil } from "lucide-react";
-import { toast } from "react-toastify";
-import { createQuote, updateQuote } from "../../api/quoteAPI";
+import { showSuccess } from "../../utils/toastUtils";
+import { updateCardSummary } from "../../api/cardAPI";
 
 interface Props {
   cardData: CardData;
@@ -18,21 +18,7 @@ const SummaryCard: React.FC<Props> = ({
   setIsEditing,
   reloadCards,
 }) => {
-  const { customer, inquiry, quote } = cardData;
-  // if (isEditing) {
-  //   return (
-  //     <CardEditor
-  //       initialData={{ summary: cardData.summary || "" }}
-  //       onSave={async (updated) => {
-  //         await updateCard(cardData.id, updated.summary);
-  //         await reloadCards();
-  //         toast.success("Inquiry Updated successfully!");
-  //         setIsEditing(false);
-  //       }}
-  //       onCancel={() => setIsEditing(false)}
-  //     />
-  //   );
-  // }
+  const { customer, inquiry } = cardData;
 
   return (
     <div className="relative border rounded-md p-2 bg-white shadow-sm">
@@ -64,36 +50,41 @@ const SummaryCard: React.FC<Props> = ({
           <span className="font-medium">Summary:</span> {cardData?.summary}
         </p>
       )}
-      {quote && !isEditing && (
-        <div className="mt-2 text-xs text-gray-800">
-          <div className="font-medium">💰 {quote.amount}</div>
-          <span>⏳ {new Date(quote.valid_until).toLocaleDateString()}</span>
-        </div>
-      )}
-      {isEditing && (
-        <CardEditor
-          initialData={{
-            amount: quote?.amount?.toString() || "",
-            valid_until:
-              quote?.valid_until || new Date().toISOString().split("T")[0],
-          }}
-          onSave={async (updated) => {
-            if (quote?.id) {
-              await updateQuote(quote.id, {
-                amount: Number(updated.amount),
-                valid_until: updated.valid_until,
-              });
-              toast.success("Quote Updated successfully!");
-            } else {
-              await createQuote({
-                card_id: cardData.id,
-                amount: Number(updated.amount),
-                valid_until: updated.valid_until,
-              });
-              toast.success("Quote Created successfully!");
-            }
 
+      {isEditing && (
+        // <CardEditor
+        //   initialData={{
+        //     amount: quote?.amount?.toString() || "",
+        //     valid_until:
+        //       quote?.valid_until || new Date().toISOString().split("T")[0],
+        //   }}
+        //   onSave={async (updated) => {
+        //     if (quote?.id) {
+        //       await updateQuote(quote.id, {
+        //         amount: Number(updated.amount),
+        //         valid_until: updated.valid_until,
+        //       });
+        //       showSuccess("Quote Updated successfully");
+        //     } else {
+        //       await createQuote({
+        //         card_id: cardData.id,
+        //         amount: Number(updated.amount),
+        //         valid_until: updated.valid_until,
+        //       });
+        //       showSuccess("Quote Created successfully");
+        //     }
+
+        //     await reloadCards();
+        //     setIsEditing(false);
+        //   }}
+        //   onCancel={() => setIsEditing(false)}
+        // />
+        <CardEditor
+          initialData={{ summary: cardData.summary || "" }}
+          onSave={async (updated) => {
+            await updateCardSummary(cardData.id, updated.summary);
             await reloadCards();
+            showSuccess("Inquiry Updated successfully");
             setIsEditing(false);
           }}
           onCancel={() => setIsEditing(false)}
