@@ -1,8 +1,22 @@
 import type { CardData } from "../types/card.type";
 import api from "./index";
 
-export const fetchCards = async (): Promise<CardData[]> => {
-  const response = await api.get<{ data: CardData[] }>("/card");
+// export const fetchCards = async (): Promise<CardData[]> => {
+//   const response = await api.get<{ data: CardData[] }>("/card");
+//   return response.data.data;
+// };
+
+export const fetchCards = async (params?: {
+  columnId?: string;
+  sort?: string[];
+}): Promise<CardData[]> => {
+  const apiParams =
+    params && params.sort && params.columnId
+      ? { columnId: params.columnId, sort: params.sort.join(",") }
+      : {};
+  const response = await api.get<{ data: CardData[] }>("/card", {
+    params: apiParams,
+  });
   return response.data.data;
 };
 

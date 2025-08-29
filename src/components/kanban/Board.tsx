@@ -10,7 +10,6 @@ import {
 } from "@dnd-kit/core";
 import {
   SortableContext,
-  arrayMove,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import Column from "./Column";
@@ -29,15 +28,31 @@ const Board: React.FC = () => {
   const [cards, setCards] = useState<CardData[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [activeCardId, setActiveCardId] = useState<string | null>(null);
+  const [sortFields, setSortFields] = useState<{
+    [columnId: string]: string[];
+  }>({});
 
-  const loadCards = async () => {
+  const loadCards = async (columnId?: string, selected?: string[]) => {
     try {
-      const allCards = await fetchCards();
+      // Only send sort fields for the selected column
+      const sortParams =
+        columnId && selected && selected.length > 0
+          ? { columnId, sort: selected }
+          : {};
+
+      console.log(sortParams, "sortParams");
+
+      const allCards = await fetchCards(sortParams);
       setCards(allCards);
     } catch (error: any) {
       console.log(error, "Failed to fetch cards:");
       showError(error, "Failed to load cards");
     }
+  };
+
+  const handleSortChange = (columnId: string, selected: string[]) => {
+    setSortFields((prev) => ({ ...prev, [columnId]: selected }));
+    loadCards(columnId, selected);
   };
 
   useEffect(() => {
@@ -240,9 +255,8 @@ const Board: React.FC = () => {
 
       <div className="flex flex-wrap justify-evenly gap-6 p-6">
         {columns.map((col) => {
-          const sortedCards = cards
-            .filter((c) => c.column_id === col.id)
-            .sort((a, b) => (a.card_position ?? 0) - (b.card_position ?? 0));
+          const sortedCards = cards.filter((c) => c.column_id === col.id);
+          // .sort((a, b) => (a.card_position ?? 0) - (b.card_position ?? 0));
           return (
             <SortableContext
               key={col.id}
@@ -252,9 +266,10 @@ const Board: React.FC = () => {
             >
               <Column
                 id={col.id}
-                name={col.name}
+                column={col}
                 cards={sortedCards}
                 reloadCards={loadCards}
+                onSortChange={handleSortChange}
               />
             </SortableContext>
           );
