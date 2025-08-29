@@ -23,7 +23,6 @@ import type { CardData } from "../../types/card.type";
 import { toast } from "react-toastify";
 import { showError, showSuccess } from "../../utils/toastUtils";
 import Card from "./Card";
-import { mockCards } from "../../utils/mockCards";
 
 const Board: React.FC = () => {
   const [columns, setColumns] = useState<ColumnType[]>([]);
@@ -33,8 +32,7 @@ const Board: React.FC = () => {
 
   const loadCards = async () => {
     try {
-      // const allCards = await fetchCards();
-      const allCards = mockCards;
+      const allCards = await fetchCards();
       setCards(allCards);
     } catch (error: any) {
       console.log(error, "Failed to fetch cards:");
@@ -119,18 +117,15 @@ const Board: React.FC = () => {
 
     if (!activeCard) return;
 
-    // If dropped on column (empty area), use column_id as overCardId
-    let destinationColumnId = overCard?.column_id || over.id;
-    let destinationCards = cards.filter(
-      (c) => c.column_id === destinationColumnId
-    );
+    let destinationColumnId = overCard?.column_id || String(over.id);
+    let destinationCards = cards
+      .filter((c) => c.column_id === destinationColumnId)
+      .sort((a, b) => (a.card_position ?? 0) - (b.card_position ?? 0));
 
-    // If dropped on card, find its index
     let overIndex = overCard
       ? destinationCards.findIndex((c) => c.id === overCardId)
       : destinationCards.length;
 
-    // Validation for moving between columns
     if (activeCard.column_id !== destinationColumnId) {
       const position = activeCard?.column?.position;
       if (position === 1 && !activeCard?.inquiry_id) {
@@ -153,19 +148,18 @@ const Board: React.FC = () => {
       }
     }
 
-    // Remove card from source column
-    let sourceCards = cards.filter(
-      (c) => c.column_id === activeCard.column_id && c.id !== activeCardId
-    );
+    let sourceCards = cards
+      .filter(
+        (c) => c.column_id === activeCard.column_id && c.id !== activeCardId
+      )
+      .sort((a, b) => (a.card_position ?? 0) - (b.card_position ?? 0));
 
-    // Insert card into destination column at correct position
     let newDestinationCards: any = [
       ...destinationCards.slice(0, overIndex),
       { ...activeCard, column_id: destinationColumnId },
       ...destinationCards.slice(overIndex),
     ];
 
-    // Update card_position for all cards in both columns
     newDestinationCards = newDestinationCards.map((c: any, idx: any) => ({
       ...c,
       card_position: idx + 1,
@@ -175,25 +169,24 @@ const Board: React.FC = () => {
       card_position: idx + 1,
     }));
 
-    // Merge all cards
-    const updatedCards = cards
-      .filter(
-        (c) =>
-          c.column_id !== activeCard.column_id &&
-          c.column_id !== destinationColumnId
-      )
-      .concat(sourceCards)
-      .concat(newDestinationCards);
+    const updatedCards = cards.map((c) => {
+      if (c.column_id === activeCard.column_id && c.id !== activeCardId) {
+        return sourceCards.find((sc) => sc.id === c.id)!;
+      }
+      if (c.column_id === destinationColumnId || c.id === activeCardId) {
+        return newDestinationCards.find((dc: any) => dc.id === c.id)!;
+      }
+      return c;
+    });
 
     setCards(updatedCards);
 
-    // Call moveCard API with updated card_position and column_id
     try {
-      // await moveCard(
-      //   activeCardId,
-      //   destinationColumnId,
-      //   newDestinationCards[overIndex].card_position
-      // );
+      await moveCard(
+        activeCardId,
+        destinationColumnId,
+        newDestinationCards[overIndex].card_position
+      );
       await loadCards();
       toast.success("Card moved successfully!");
     } catch (err) {

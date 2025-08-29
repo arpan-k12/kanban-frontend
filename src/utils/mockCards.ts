@@ -4,7 +4,7 @@ import type { CardData } from "../types/card.type";
 export const mockCards: any[] = [
   {
     id: "10d83daf-0c42-4698-a677-d15ee0e01965",
-    column_id: "c3e27989-fb24-4bb4-b392-04f54af2dc4f",
+    column_id: "1a66d04e-af35-41c0-802e-43122d72f5c7",
     card_position: 1,
     customer_id: "4c39bad4-2fa9-45ba-ad07-0f9612a391cd",
     inquiry_id: "bd6d1757-599b-4fe9-bf0b-d0fa14aea36a",

@@ -18,10 +18,12 @@ export const updateCardSummary = async (
 
 export const moveCard = async (
   id: string,
-  newColumnId: string
+  destinationColumnId: string,
+  newCard_position: number
 ): Promise<CardData> => {
   const response = await api.patch<{ data: CardData }>(`/card/${id}`, {
-    columnId: newColumnId,
+    columnId: destinationColumnId,
+    card_position: newCard_position,
   });
   return response.data.data;
 };
