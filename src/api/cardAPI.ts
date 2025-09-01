@@ -9,11 +9,12 @@ import api from "./index";
 export const fetchCards = async (params?: {
   columnId?: string;
   sort?: string[];
+  organizationId?: string;
 }): Promise<CardData[]> => {
-  const apiParams =
-    params && params.sort && params.columnId
-      ? { columnId: params.columnId, sort: params.sort.join(",") }
-      : {};
+  const apiParams: any = {};
+  if (params?.columnId) apiParams.columnId = params.columnId;
+  if (params?.sort) apiParams.sort = params.sort.join(",");
+  if (params?.organizationId) apiParams.organizationId = params.organizationId;
   const response = await api.get<{ data: CardData[] }>("/card", {
     params: apiParams,
   });

@@ -17,12 +17,11 @@ const CardEditor: React.FC<Props> = ({
   onCancel,
   type = "default",
 }) => {
-  // Validation Schema
   const validationSchema =
     type === "decision"
       ? Yup.object({
           decision: Yup.string().required("Decision is required"),
-          reason: Yup.string().required("Reason is required"),
+          reason: Yup.string(),
         })
       : Yup.object(
           Object.keys(initialData).reduce(
@@ -100,6 +99,7 @@ const CardEditor: React.FC<Props> = ({
                     className="w-full border rounded p-1 text-sm"
                     placeholderText={key}
                     dateFormat="yyyy-MM-dd"
+                    portalId="root-portal"
                   />
                   <ErrorMessage
                     name={key}

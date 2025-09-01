@@ -1,6 +1,6 @@
 import React from "react";
 import type { CardData } from "../../types/card.type";
-import CardEditor from "./CardEditor";
+import CardEditor from "../common/CardEditor";
 import { Pencil } from "lucide-react";
 import { updateCustomer } from "../../api/customerAPI";
 import { updateInquiry } from "../../api/inquiryAPI";
@@ -46,7 +46,6 @@ const InquiryCard: React.FC<Props> = ({
           <span className="font-medium">Budget:</span> {inquiry?.budget}
         </p>
       )}
-      <br />
       {isEditing && (
         <CardEditor
           initialData={{
@@ -68,16 +67,6 @@ const InquiryCard: React.FC<Props> = ({
           }}
           onCancel={() => setIsEditing(false)}
         />
-        // <CardEditor
-        //   initialData={{ summary: cardData.summary || "" }}
-        //   onSave={async (updated) => {
-        //     await updateCardSummary(cardData.id, updated.summary);
-        //     await reloadCards();
-        //     showSuccess("Inquiry Updated successfully");
-        //     setIsEditing(false);
-        //   }}
-        //   onCancel={() => setIsEditing(false)}
-        // />
       )}
     </div>
   );

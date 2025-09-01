@@ -22,26 +22,28 @@ import type { CardData } from "../../types/card.type";
 import { toast } from "react-toastify";
 import { showError, showSuccess } from "../../utils/toastUtils";
 import Card from "./Card";
+import { useOrganization } from "../../context/OrganizationContext";
 
 const Board: React.FC = () => {
   const [columns, setColumns] = useState<ColumnType[]>([]);
   const [cards, setCards] = useState<CardData[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [activeCardId, setActiveCardId] = useState<string | null>(null);
-  const [sortFields, setSortFields] = useState<{
-    [columnId: string]: string[];
-  }>({});
+  const { selectedOrg } = useOrganization();
+
+  console.log(selectedOrg, "jjj");
 
   const loadCards = async (columnId?: string, selected?: string[]) => {
     try {
-      // Only send sort fields for the selected column
-      const sortParams =
+      const sortParams: any =
         columnId && selected && selected.length > 0
           ? { columnId, sort: selected }
           : {};
 
       console.log(sortParams, "sortParams");
-
+      if (selectedOrg) {
+        sortParams.organizationId = selectedOrg;
+      }
       const allCards = await fetchCards(sortParams);
       setCards(allCards);
     } catch (error: any) {
@@ -51,7 +53,6 @@ const Board: React.FC = () => {
   };
 
   const handleSortChange = (columnId: string, selected: string[]) => {
-    setSortFields((prev) => ({ ...prev, [columnId]: selected }));
     loadCards(columnId, selected);
   };
 
@@ -71,50 +72,6 @@ const Board: React.FC = () => {
     loadColumns();
   }, []);
 
-  // const handleDragEnd = async (event: any) => {
-  //   const { over, active } = event;
-  //   if (!over || !active) return;
-  //   const cardId = active.id as string;
-  //   const newColumnId = over.id as string;
-  //   const card = cards.find((c) => c.id === cardId);
-  //   if (!card) return;
-  //   const position = card?.column?.position;
-  //   if (position === 1 && !card?.inquiry_id) {
-  //     toast.warning("Please fill the inquiry before moving this card!");
-  //     return;
-  //   }
-  //   if (position === 2 && !card?.summary) {
-  //     toast.warning("Please fill the summary before moving this card!");
-  //     return;
-  //   }
-  //   if (position === 3 && !card?.quote_id) {
-  //     toast.warning("Please attach a quote before moving this card!");
-  //     return;
-  //   }
-  //   const oldColumn = columns.find((col) => col.id === card.column_id);
-  //   const newColumn = columns.find((col) => col.id === newColumnId);
-  //   if (!oldColumn || !newColumn) return;
-  //   if (newColumn.position !== oldColumn.position + 1) {
-  //     return;
-  //   }
-  //   const newCardsInColumn = cards.filter((c) => c.column_id === newColumnId);
-  //   const newPosition = newCardsInColumn.length + 1;
-  //   setCards((prev) =>
-  //     prev.map((c) =>
-  //       c.id === cardId
-  //         ? { ...c, column_id: newColumnId, position: newPosition }
-  //         : c
-  //     )
-  //   );
-  //   try {
-  //     await moveCard(cardId, newColumnId);
-  //     await loadCards();
-  //     toast.success("Card moved successfully!");
-  //   } catch (err) {
-  //     console.error("Failed to update card:", err);
-  //     toast.error("Failed to move card!");
-  //   }
-  // };
   const handleDragStart = (event: any) => {
     setActiveCardId(event.active.id as string);
   };
@@ -256,7 +213,6 @@ const Board: React.FC = () => {
       <div className="flex flex-wrap justify-evenly gap-6 p-6">
         {columns.map((col) => {
           const sortedCards = cards.filter((c) => c.column_id === col.id);
-          // .sort((a, b) => (a.card_position ?? 0) - (b.card_position ?? 0));
           return (
             <SortableContext
               key={col.id}

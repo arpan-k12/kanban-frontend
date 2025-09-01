@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from "react";
-import { getAllCustomer } from "../api/customerAPI";
+import React from "react";
+import { GetAllCustomerAPI } from "../api/customerAPI";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import type { Customer } from "../types/customer.type";
+import { useQuery } from "@tanstack/react-query";
 
 interface InquiryModalProps {
   isOpen: boolean;
@@ -19,23 +20,20 @@ const InquiryModal: React.FC<InquiryModalProps> = ({
   onClose,
   onAdd,
 }) => {
-  const [customers, setCustomers] = useState<Customer[]>([]);
-
-  useEffect(() => {
-    if (isOpen) {
-      const loadData = async () => {
-        try {
-          const response = await getAllCustomer();
-          setCustomers(response);
-        } catch (error) {
-          console.error("Failed to fetch customer data:", error);
-        }
-      };
-      loadData();
-    }
-  }, [isOpen]);
+  const {
+    data: customers = [],
+    isLoading,
+    isError,
+  } = useQuery<Customer[]>({
+    queryKey: ["GetAllCustomerAPI"],
+    queryFn: GetAllCustomerAPI,
+    enabled: isOpen,
+  });
 
   if (!isOpen) return null;
+
+  if (isLoading) return <div>Loading customers...</div>;
+  if (isError) return <div>Failed to load customers.</div>;
 
   const validationSchema = Yup.object().shape({
     customerId: Yup.string().required("Customer is required"),

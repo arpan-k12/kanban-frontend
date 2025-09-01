@@ -7,10 +7,7 @@ export function multiOptions(Position: number) {
         { label: "Customer", value: "customer" },
       ];
     case 2:
-      return [
-        { label: "Summary Text", value: "summary" },
-        { label: "Assigned To", value: "assigned_to" },
-      ];
+      return [{ label: "Summary Text", value: "summary" }];
     case 3:
       return [
         { label: "Quote Amount", value: "amount" },

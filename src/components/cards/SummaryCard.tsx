@@ -1,5 +1,5 @@
 import React from "react";
-import CardEditor from "./CardEditor";
+import CardEditor from "../common/CardEditor";
 import type { CardData } from "../../types/card.type";
 import { Pencil } from "lucide-react";
 import { showSuccess } from "../../utils/toastUtils";
@@ -52,33 +52,6 @@ const SummaryCard: React.FC<Props> = ({
       )}
 
       {isEditing && (
-        // <CardEditor
-        //   initialData={{
-        //     amount: quote?.amount?.toString() || "",
-        //     valid_until:
-        //       quote?.valid_until || new Date().toISOString().split("T")[0],
-        //   }}
-        //   onSave={async (updated) => {
-        //     if (quote?.id) {
-        //       await updateQuote(quote.id, {
-        //         amount: Number(updated.amount),
-        //         valid_until: updated.valid_until,
-        //       });
-        //       showSuccess("Quote Updated successfully");
-        //     } else {
-        //       await createQuote({
-        //         card_id: cardData.id,
-        //         amount: Number(updated.amount),
-        //         valid_until: updated.valid_until,
-        //       });
-        //       showSuccess("Quote Created successfully");
-        //     }
-
-        //     await reloadCards();
-        //     setIsEditing(false);
-        //   }}
-        //   onCancel={() => setIsEditing(false)}
-        // />
         <CardEditor
           initialData={{ summary: cardData.summary || "" }}
           onSave={async (updated) => {

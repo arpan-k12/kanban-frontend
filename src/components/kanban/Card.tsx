@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { useDraggable } from "@dnd-kit/core";
 import type { CardData } from "../../types/card.type";
 import InquiryCard from "../cards/InquiryCard";
 import SummaryCard from "../cards/SummaryCard";
@@ -16,11 +15,6 @@ const Card: React.FC<CardProps> = ({ cardData, reloadCards }) => {
   const { id, column } = cardData;
   const [isEditing, setIsEditing] = useState(false);
 
-  // const { attributes, listeners, setNodeRef, transform, isDragging } =
-  //   useDraggable({
-  //     id,
-  //     disabled: isEditing,
-  //   });
   const {
     attributes,
     listeners,
@@ -37,13 +31,6 @@ const Card: React.FC<CardProps> = ({ cardData, reloadCards }) => {
     transform: CSS.Transform.toString(transform),
     transition,
   };
-  // const styles = {
-  //   transform: transform
-  //     ? `translate(${transform.x}px, ${transform.y}px)`
-  //     : undefined,
-  //   transition,
-  //   zIndex: isDragging ? 999 : "auto",
-  // };
 
   return (
     <div

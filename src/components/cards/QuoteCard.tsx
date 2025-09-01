@@ -1,5 +1,5 @@
 import React from "react";
-import CardEditor from "./CardEditor";
+import CardEditor from "../common/CardEditor";
 import type { CardData } from "../../types/card.type";
 import { Pencil } from "lucide-react";
 import { showSuccess } from "../../utils/toastUtils";
@@ -58,33 +58,6 @@ const QuoteCard: React.FC<Props> = ({
       )}
 
       {isEditing && (
-        // <CardEditor
-        //   initialData={{
-        //     decision: decision?.decision || "",
-        //     reason: decision?.reason || "",
-        //   }}
-        //   onSave={async (updated) => {
-        //     if (decision?.id) {
-        //       await updateDecision(decision.id, {
-        //         decision: updated.decision,
-        //         reason: updated.reason,
-        //       });
-        //       showSuccess("Decision Updated successfully");
-        //     } else {
-        //       await createDecision({
-        //         card_id: cardData.id,
-        //         decision: updated.decision,
-        //         reason: updated.reason,
-        //       });
-        //       showSuccess("Decision Created successfully");
-        //     }
-
-        //     await reloadCards();
-        //     setIsEditing(false);
-        //   }}
-        //   onCancel={() => setIsEditing(false)}
-        //   type="decision"
-        // />
         <CardEditor
           initialData={{
             amount: quote?.amount?.toString() || "",
