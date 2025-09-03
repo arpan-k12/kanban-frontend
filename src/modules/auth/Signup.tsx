@@ -1,8 +1,9 @@
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import { signupUser } from "../../api/auth.api";
+import { signupUserAPI } from "../../api/auth.api";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import { useMutation } from "@tanstack/react-query";
 
 export default function Signup() {
   const navigate = useNavigate();
@@ -23,6 +24,28 @@ export default function Signup() {
       .required("Confirm Password is required"),
   });
 
+  const {
+    mutateAsync: mutateSignup,
+    isPending,
+    error,
+  } = useMutation({
+    mutationFn: ({
+      username,
+      email,
+      password,
+      confirmPassword,
+    }: {
+      username: string;
+      email: string;
+      password: string;
+      confirmPassword: string;
+    }) => signupUserAPI(username, email, password, confirmPassword),
+    onSuccess: (data: any) => {
+      login(data.data, data.token);
+      navigate("/board");
+    },
+  });
+
   return (
     <div className="flex items-center justify-center h-screen bg-gray-100">
       <div className="bg-white p-6 rounded shadow-md w-96">
@@ -38,18 +61,11 @@ export default function Signup() {
           validationSchema={validationSchema}
           onSubmit={async (values, { setSubmitting, setFieldError }) => {
             try {
-              const data = await signupUser(
-                values.username,
-                values.email,
-                values.password,
-                values.confirmPassword
-              );
-              login(data?.data, data?.token);
-              navigate("/board");
+              await mutateSignup(values);
             } catch (err: any) {
               setFieldError(
                 "general",
-                err.response?.data?.message || "Signup failed"
+                err?.response?.data?.message || "Signup failed"
               );
             } finally {
               setSubmitting(false);
@@ -116,7 +132,7 @@ export default function Signup() {
 
               <button
                 type="submit"
-                disabled={isSubmitting}
+                disabled={isSubmitting || isPending}
                 className="w-full bg-green-500 text-white p-2 rounded hover:bg-green-600 disabled:opacity-50"
               >
                 {isSubmitting ? "Signing up..." : "Sign Up"}

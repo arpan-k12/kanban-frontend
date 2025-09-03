@@ -1,8 +1,9 @@
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import { loginUser } from "../../api/auth.api";
+import { loginUserAPI } from "../../api/auth.api";
 import { useAuth } from "../../context/AuthContext";
 import { useNavigate, Link } from "react-router-dom";
+import { useMutation } from "@tanstack/react-query";
 
 export default function Login() {
   const { login } = useAuth();
@@ -17,6 +18,19 @@ export default function Login() {
       .required("Password is required"),
   });
 
+  const {
+    mutateAsync: mutateLogin,
+    isPending,
+    error,
+  } = useMutation({
+    mutationFn: ({ email, password }: { email: string; password: string }) =>
+      loginUserAPI(email, password),
+    onSuccess: (data: any) => {
+      login(data.data, data.token);
+      navigate("/board");
+    },
+  });
+
   return (
     <div className="flex items-center justify-center h-screen bg-gray-100">
       <div className="bg-white p-6 rounded shadow-md w-96">
@@ -27,13 +41,11 @@ export default function Login() {
           validationSchema={validationSchema}
           onSubmit={async (values, { setSubmitting, setFieldError }) => {
             try {
-              const data = await loginUser(values.email, values.password);
-              login(data.data, data.token);
-              navigate("/board");
+              await mutateLogin(values);
             } catch (err: any) {
               setFieldError(
                 "general",
-                err.response?.data?.message || "Login failed"
+                err?.response?.data?.message || "Login failed"
               );
             } finally {
               setSubmitting(false);

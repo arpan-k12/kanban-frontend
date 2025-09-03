@@ -2,8 +2,9 @@ import React from "react";
 import CardEditor from "../common/CardEditor";
 import type { CardData } from "../../types/card.type";
 import { Pencil } from "lucide-react";
-import { showSuccess } from "../../utils/toastUtils";
-import { createQuote, updateQuote } from "../../api/quoteAPI";
+import { showError, showSuccess } from "../../utils/toastUtils";
+import { createQuoteAPI, updateQuoteAPI } from "../../api/quoteAPI";
+import { useMutation } from "@tanstack/react-query";
 
 interface Props {
   cardData: CardData;
@@ -19,6 +20,44 @@ const QuoteCard: React.FC<Props> = ({
   reloadCards,
 }) => {
   const { customer, inquiry, quote } = cardData;
+
+  const { mutateAsync: mutateCreateQuote, isPending: isCreating } = useMutation(
+    {
+      mutationFn: (data: {
+        card_id: string;
+        amount: number;
+        valid_until: string;
+      }) => createQuoteAPI(data),
+      onSuccess: async () => {
+        showSuccess("Quote Created successfully");
+        await reloadCards();
+      },
+      onError: (error) => {
+        showError(error, "Failed to create quote");
+      },
+    }
+  );
+  // Mutation: update quote
+  const { mutateAsync: mutateUpdateQuote, isPending: isUpdating } = useMutation(
+    {
+      mutationFn: (vars: {
+        quoteId: string;
+        amount: number;
+        valid_until: string;
+      }) =>
+        updateQuoteAPI(vars.quoteId, {
+          amount: vars.amount,
+          valid_until: vars.valid_until,
+        }),
+      onSuccess: async () => {
+        showSuccess("Quote Updated successfully");
+        await reloadCards();
+      },
+      onError: (error) => {
+        showError(error, "Failed to update quote");
+      },
+    }
+  );
 
   return (
     <div className="relative border rounded-md p-2 bg-white shadow-sm">
@@ -66,21 +105,18 @@ const QuoteCard: React.FC<Props> = ({
           }}
           onSave={async (updated) => {
             if (quote?.id) {
-              await updateQuote(quote.id, {
+              await mutateUpdateQuote({
+                quoteId: quote.id,
                 amount: Number(updated.amount),
                 valid_until: updated.valid_until,
               });
-              showSuccess("Quote Updated successfully");
             } else {
-              await createQuote({
+              await mutateCreateQuote({
                 card_id: cardData.id,
                 amount: Number(updated.amount),
                 valid_until: updated.valid_until,
               });
-              showSuccess("Quote Created successfully");
             }
-
-            await reloadCards();
             setIsEditing(false);
           }}
           onCancel={() => setIsEditing(false)}

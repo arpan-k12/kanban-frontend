@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   DndContext,
   DragOverlay,
@@ -13,64 +13,99 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import Column from "./Column";
-import { fetchKanbanColumns } from "../../api/kanbanColumnAPI";
-import { fetchCards, moveCard } from "../../api/cardAPI";
+import { GetKanbanColumnsAPI } from "../../api/kanbanColumnAPI";
+import { fetchCardsAPI, moveCard } from "../../api/cardAPI";
 import InquiryModal from "../InquiryModal";
-import { createInquiryCard } from "../../api/inquiryAPI";
+import { createInquiryCardAPI } from "../../api/inquiryAPI";
 import type { ColumnType } from "../../types/column.type";
 import type { CardData } from "../../types/card.type";
 import { toast } from "react-toastify";
 import { showError, showSuccess } from "../../utils/toastUtils";
 import Card from "./Card";
 import { useOrganization } from "../../context/OrganizationContext";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 const Board: React.FC = () => {
-  const [columns, setColumns] = useState<ColumnType[]>([]);
-  const [cards, setCards] = useState<CardData[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [activeCardId, setActiveCardId] = useState<string | null>(null);
   const { selectedOrg } = useOrganization();
+  const queryClient = useQueryClient();
 
-  console.log(selectedOrg, "jjj");
+  // Fetch columns
+  const {
+    data: columns = [],
+    isLoading: isColumnsLoading,
+    isError: isColumnsError,
+  } = useQuery<ColumnType[]>({
+    queryKey: ["kanbanColumns"],
+    queryFn: async () => {
+      const cols = await GetKanbanColumnsAPI();
+      return cols.sort((a, b) => a.position - b.position);
+    },
+    // staleTime: 1000 * 60 * 5,
+  });
 
-  const loadCards = async (columnId?: string, selected?: string[]) => {
-    try {
-      const sortParams: any =
-        columnId && selected && selected.length > 0
-          ? { columnId, sort: selected }
-          : {};
+  // Fetch cards
 
-      console.log(sortParams, "sortParams");
-      if (selectedOrg) {
-        sortParams.organizationId = selectedOrg;
-      }
-      const allCards = await fetchCards(sortParams);
-      setCards(allCards);
-    } catch (error: any) {
-      console.log(error, "Failed to fetch cards:");
-      showError(error, "Failed to load cards");
-    }
-  };
+  const [queryParams, setQueryParams] = useState<{
+    organizationId: string;
+    columnId?: string | null;
+    sort?: string[];
+  }>({
+    organizationId: selectedOrg ?? "",
+    columnId: null,
+    sort: [],
+  });
+
+  const { data: cards = [], refetch: refetchCards } = useQuery({
+    queryKey: ["fetchCardsAPI", queryParams],
+    queryFn: ({ queryKey }) => {
+      const [, params] = queryKey as [string, typeof queryParams];
+      return fetchCardsAPI(params);
+    },
+  });
 
   const handleSortChange = (columnId: string, selected: string[]) => {
-    loadCards(columnId, selected);
+    setQueryParams({ organizationId: selectedOrg, columnId, sort: selected });
   };
 
-  useEffect(() => {
-    const loadColumns = async () => {
-      try {
-        const cols = await fetchKanbanColumns();
-        setColumns(cols.sort((a: any, b: any) => a.position - b.position));
+  // Mutation for moveCard
+  const { mutateAsync: mutateMoveCard, isPending: isMovingCard } = useMutation({
+    mutationFn: ({
+      id,
+      destinationColumnId,
+      newCard_position,
+    }: {
+      id: string;
+      destinationColumnId: string;
+      newCard_position: number;
+    }) => moveCard(id, destinationColumnId, newCard_position),
+    onSuccess: async () => {
+      await refetchCards();
+      toast.success("Card moved successfully!");
+    },
+    onError: () => {
+      toast.error("Failed to move card!");
+    },
+  });
 
-        await loadCards();
-      } catch (error) {
-        console.error("Failed to fetch board data:", error);
-        toast.error("Something went wrong!");
-      }
-    };
-
-    loadColumns();
-  }, []);
+  // Mutation for createInquiryCard
+  const { mutateAsync: mutateCreateInquiryCard, isPending: isCreatingCard } =
+    useMutation({
+      mutationFn: (data: {
+        customer_id: string;
+        commodity: string;
+        budget: number;
+      }) => createInquiryCardAPI(data),
+      onSuccess: async () => {
+        showSuccess("Card Created successfully!");
+        await refetchCards();
+      },
+      onError: (error) => {
+        console.error("Failed to add card:", error);
+        showError(error, "Failed to create card");
+      },
+    });
 
   const handleDragStart = (event: any) => {
     setActiveCardId(event.active.id as string);
@@ -141,30 +176,23 @@ const Board: React.FC = () => {
       card_position: idx + 1,
     }));
 
-    const updatedCards = cards.map((c) => {
-      if (c.column_id === activeCard.column_id && c.id !== activeCardId) {
-        return sourceCards.find((sc) => sc.id === c.id)!;
-      }
-      if (c.column_id === destinationColumnId || c.id === activeCardId) {
-        return newDestinationCards.find((dc: any) => dc.id === c.id)!;
-      }
-      return c;
+    // const updatedCards = cards.map((c) => {
+    //   if (c.column_id === activeCard.column_id && c.id !== activeCardId) {
+    //     return sourceCards.find((sc) => sc.id === c.id)!;
+    //   }
+    //   if (c.column_id === destinationColumnId || c.id === activeCardId) {
+    //     return newDestinationCards.find((dc: any) => dc.id === c.id)!;
+    //   }
+    //   return c;
+    // });
+
+    // setCards(updatedCards);
+
+    await mutateMoveCard({
+      id: activeCardId,
+      destinationColumnId,
+      newCard_position: newDestinationCards[overIndex].card_position,
     });
-
-    setCards(updatedCards);
-
-    try {
-      await moveCard(
-        activeCardId,
-        destinationColumnId,
-        newDestinationCards[overIndex].card_position
-      );
-      await loadCards();
-      toast.success("Card moved successfully!");
-    } catch (err) {
-      console.error("Failed to update card:", err);
-      toast.error("Failed to move card!");
-    }
   };
 
   const handleAddCard = async (data: {
@@ -172,18 +200,11 @@ const Board: React.FC = () => {
     commodity: string;
     budget: number;
   }) => {
-    try {
-      await createInquiryCard({
-        customer_id: data.customerId,
-        commodity: data.commodity,
-        budget: data.budget,
-      });
-      showSuccess("Card Created successfully!");
-      await loadCards();
-    } catch (error) {
-      console.error("Failed to add card:", error);
-      showError(error, "Failed to Created card");
-    }
+    await mutateCreateInquiryCard({
+      customer_id: data.customerId,
+      commodity: data.commodity,
+      budget: data.budget,
+    });
   };
 
   const mouseSensor = useSensor(MouseSensor, {
@@ -224,7 +245,7 @@ const Board: React.FC = () => {
                 id={col.id}
                 column={col}
                 cards={sortedCards}
-                reloadCards={loadCards}
+                reloadCards={refetchCards}
                 onSortChange={handleSortChange}
               />
             </SortableContext>
@@ -236,7 +257,7 @@ const Board: React.FC = () => {
           ? (() => {
               const card = cards.find((c) => c.id === activeCardId);
               return card ? (
-                <Card cardData={card} reloadCards={loadCards} />
+                <Card cardData={card} reloadCards={refetchCards} />
               ) : null;
             })()
           : null}

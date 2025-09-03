@@ -2,9 +2,10 @@ import React from "react";
 import type { CardData } from "../../types/card.type";
 import CardEditor from "../common/CardEditor";
 import { Pencil } from "lucide-react";
-import { updateCustomer } from "../../api/customerAPI";
-import { updateInquiry } from "../../api/inquiryAPI";
-import { showSuccess } from "../../utils/toastUtils";
+import { updateCustomerAPI } from "../../api/customerAPI";
+import { updateInquiryAPI } from "../../api/inquiryAPI";
+import { showError, showSuccess } from "../../utils/toastUtils";
+import { useMutation } from "@tanstack/react-query";
 
 interface Props {
   cardData: CardData;
@@ -20,6 +21,31 @@ const InquiryCard: React.FC<Props> = ({
   reloadCards,
 }) => {
   const { customer, inquiry, customer_id } = cardData;
+
+  // Mutation for customer update
+  const { mutateAsync: mutateCustomer } = useMutation({
+    mutationFn: ({
+      id,
+      body,
+    }: {
+      id: string;
+      body: {
+        c_name: string;
+        c_email: string;
+      };
+    }) => updateCustomerAPI(id, body),
+  });
+
+  // Mutation for inquiry update
+  const { mutateAsync: mutateInquiry } = useMutation({
+    mutationFn: ({
+      id,
+      body,
+    }: {
+      id: string;
+      body: { customer_id: string; commodity: string; budget: number };
+    }) => updateInquiryAPI(id, body),
+  });
 
   return (
     <div className="relative border rounded-md p-2 bg-white shadow-sm">
@@ -55,15 +81,40 @@ const InquiryCard: React.FC<Props> = ({
             budget: inquiry?.budget?.toString() || "",
           }}
           onSave={async (updated: any) => {
-            await updateCustomer(customer_id, updated.c_name, updated.c_email);
-            await updateInquiry(inquiry?.id, {
-              customer_id,
-              commodity: updated?.commodity,
-              budget: updated?.budget,
-            });
-            await reloadCards();
-            showSuccess("Inquiry Updated successfully");
-            setIsEditing(false);
+            // await updateCustomer(customer_id, updated.c_name, updated.c_email);
+            // await updateInquiry(inquiry?.id, {
+            //   customer_id,
+            //   commodity: updated?.commodity,
+            //   budget: updated?.budget,
+            // });
+            // await reloadCards();
+
+            try {
+              await mutateCustomer({
+                id: customer_id,
+                body: {
+                  c_name: updated.c_name,
+                  c_email: updated.c_email,
+                },
+              });
+
+              if (inquiry?.id) {
+                await mutateInquiry({
+                  id: inquiry.id,
+                  body: {
+                    customer_id,
+                    commodity: updated.commodity,
+                    budget: Number(updated.budget),
+                  },
+                });
+              }
+
+              await reloadCards();
+              showSuccess("Inquiry updated successfully!");
+              setIsEditing(false);
+            } catch (error) {
+              showError(error, "Failed to update inquiry");
+            }
           }}
           onCancel={() => setIsEditing(false)}
         />

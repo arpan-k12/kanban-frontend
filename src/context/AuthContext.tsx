@@ -2,6 +2,8 @@ import { createContext, useContext, useState } from "react";
 import type { ReactNode } from "react";
 import { getToken, getUser } from "../utils/storage";
 import { logoutUser } from "../api/auth.api";
+import { showError } from "../utils/toastUtils";
+import { Navigate } from "react-router-dom";
 
 type AuthContextType = {
   user: any;
@@ -14,9 +16,14 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<any>(getUser());
+
   const [token, setToken] = useState<string | null>(getToken());
 
   const login = (user: any, token: string) => {
+    if (!user || !token) {
+      <Navigate to="/login" />;
+      showError("Something went wrong, Please Login again");
+    }
     setUser(user);
     setToken(token);
     localStorage.setItem("token", token);
@@ -27,6 +34,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     logoutUser();
     setUser(null);
     setToken(null);
+    <Navigate to="/login" />;
   };
 
   return (

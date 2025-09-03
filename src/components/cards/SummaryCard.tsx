@@ -3,7 +3,8 @@ import CardEditor from "../common/CardEditor";
 import type { CardData } from "../../types/card.type";
 import { Pencil } from "lucide-react";
 import { showSuccess } from "../../utils/toastUtils";
-import { updateCardSummary } from "../../api/cardAPI";
+import { updateCardSummaryAPI } from "../../api/cardAPI";
+import { useMutation } from "@tanstack/react-query";
 
 interface Props {
   cardData: CardData;
@@ -19,6 +20,12 @@ const SummaryCard: React.FC<Props> = ({
   reloadCards,
 }) => {
   const { customer, inquiry } = cardData;
+
+  // Mutation for card summary update
+  const { mutateAsync: mutateCardSummary } = useMutation({
+    mutationFn: ({ id, summary }: { id: string; summary: string }) =>
+      updateCardSummaryAPI(id, summary),
+  });
 
   return (
     <div className="relative border rounded-md p-2 bg-white shadow-sm">
@@ -55,7 +62,10 @@ const SummaryCard: React.FC<Props> = ({
         <CardEditor
           initialData={{ summary: cardData.summary || "" }}
           onSave={async (updated) => {
-            await updateCardSummary(cardData.id, updated.summary);
+            await mutateCardSummary({
+              id: cardData.id,
+              summary: updated.summary,
+            });
             await reloadCards();
             showSuccess("Inquiry Updated successfully");
             setIsEditing(false);

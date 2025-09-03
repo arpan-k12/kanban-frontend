@@ -2,8 +2,9 @@ import React from "react";
 import type { CardData } from "../../types/card.type";
 import { Pencil } from "lucide-react";
 import CardEditor from "../common/CardEditor";
-import { createDecision, updateDecision } from "../../api/decisionAPI";
+import { createDecisionAPI, updateDecisionAPI } from "../../api/decisionAPI";
 import { showSuccess } from "../../utils/toastUtils";
+import { useMutation } from "@tanstack/react-query";
 
 interface Props {
   cardData: CardData;
@@ -19,6 +20,20 @@ const DecisionCard: React.FC<Props> = ({
   reloadCards,
 }) => {
   const { customer, inquiry, decision, quote } = cardData;
+
+  const { mutateAsync: mutateCreateDecision } = useMutation({
+    mutationFn: createDecisionAPI,
+  });
+
+  const { mutateAsync: mutateUpdateDecision } = useMutation({
+    mutationFn: ({
+      id,
+      body,
+    }: {
+      id: string;
+      body: { decision: string; reason: string };
+    }) => updateDecisionAPI(id, body),
+  });
 
   return (
     <div className="relative border rounded-md p-2 bg-white shadow-sm">
@@ -89,13 +104,16 @@ const DecisionCard: React.FC<Props> = ({
           }}
           onSave={async (updated) => {
             if (decision?.id) {
-              await updateDecision(decision.id, {
-                decision: updated.decision,
-                reason: updated.reason,
+              await mutateUpdateDecision({
+                id: decision.id,
+                body: {
+                  decision: updated.decision,
+                  reason: updated.reason,
+                },
               });
               showSuccess("Decision Updated successfully");
             } else {
-              await createDecision({
+              await mutateCreateDecision({
                 card_id: cardData.id,
                 decision: updated.decision,
                 reason: updated.reason,

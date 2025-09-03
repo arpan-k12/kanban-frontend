@@ -1,22 +1,51 @@
 import type { Decision } from "../types/decision.type";
+import type { AxiosResponse } from "../types/user.type";
 import api from "./index";
+import { request } from "./request";
 
-export const createDecision = async (data: {
+// export const createDecision = async (data: {
+//   card_id: string;
+//   decision: string;
+//   reason: string;
+// }): Promise<Decision> => {
+//   const response = await api.post<{ data: Decision }>("/decision", data);
+//   return response.data.data;
+// };
+
+// export const updateDecision = async (
+//   decisionId: string,
+//   data: { decision: string; reason: string }
+// ): Promise<Decision> => {
+//   const response = await api.patch<{ data: Decision }>(
+//     `/decision/${decisionId}`,
+//     data
+//   );
+//   return response.data.data;
+// };
+
+export const createDecisionAPI = async (body: {
   card_id: string;
   decision: string;
   reason: string;
 }): Promise<Decision> => {
-  const response = await api.post<{ data: Decision }>("/decision", data);
-  return response.data.data;
+  const response: AxiosResponse<Decision> = await request({
+    url: "decision",
+    method: "POST",
+    body,
+  });
+
+  return response?.data ?? ({} as Decision);
 };
 
-export const updateDecision = async (
+export const updateDecisionAPI = async (
   decisionId: string,
-  data: { decision: string; reason: string }
+  body: { decision: string; reason: string }
 ): Promise<Decision> => {
-  const response = await api.patch<{ data: Decision }>(
-    `/decision/${decisionId}`,
-    data
-  );
-  return response.data.data;
+  const response: AxiosResponse<Decision> = await request({
+    url: `decision/${decisionId}`,
+    method: "PATCH",
+    body,
+  });
+
+  return response?.data ?? ({} as Decision);
 };
