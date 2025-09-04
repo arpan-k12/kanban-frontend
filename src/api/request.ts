@@ -38,10 +38,13 @@ axios.interceptors.response.use(
     return Promise.reject(response);
   },
   function (error) {
-    if (error?.response?.status === 401 || error?.response?.status === 403) {
+    if (error?.response?.status === 403) {
       // removeUser();
       localStorage.removeItem("token");
-      window.location.href = "/signin";
+      window.location.href = "/login";
+    }
+    if (error?.response?.status === 401) {
+      localStorage.removeItem("token");
     }
 
     const message =

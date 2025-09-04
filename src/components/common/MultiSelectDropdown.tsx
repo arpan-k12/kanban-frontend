@@ -13,8 +13,8 @@ const MultiSelectDropdown: React.FC<MultiSelectDropdownProps> = ({
   onChange,
   keepOpen,
 }) => {
-  const handleSelect = (value: string, e: React.MouseEvent) => {
-    e.stopPropagation();
+  const handleSelect = (value: string) => {
+    // e.stopPropagation();
     if (selected.includes(value)) {
       onChange(selected.filter((v) => v !== value));
     } else {
@@ -28,9 +28,14 @@ const MultiSelectDropdown: React.FC<MultiSelectDropdownProps> = ({
         <label
           key={opt.value}
           className="flex items-center gap-2 py-1 cursor-pointer"
-          onClick={(e) => handleSelect(opt.value, e)}
+          onClick={(e) => e.stopPropagation()}
         >
-          <input type="checkbox" checked={selected.includes(opt.value)} />
+          <input
+            type="checkbox"
+            className="cursor-pointer"
+            checked={selected.includes(opt.value)}
+            onChange={() => handleSelect(opt.value)}
+          />
           {opt.label}
         </label>
       ))}

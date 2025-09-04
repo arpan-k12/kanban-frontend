@@ -24,6 +24,7 @@ import { request } from "./request";
 // };
 
 export const createInquiryCardAPI = async (data: {
+  organization_id: string;
   customer_id: string;
   commodity: string;
   budget: number;

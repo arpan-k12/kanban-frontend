@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   DndContext,
   DragOverlay,
@@ -24,14 +24,18 @@ import { showError, showSuccess } from "../../utils/toastUtils";
 import Card from "./Card";
 import { useOrganization } from "../../context/OrganizationContext";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import type { User } from "../../types/user.type";
 
-const Board: React.FC = () => {
+interface BoardProps {
+  user: User;
+}
+
+const Board: React.FC<BoardProps> = ({ user }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [activeCardId, setActiveCardId] = useState<string | null>(null);
   const { selectedOrg } = useOrganization();
   const queryClient = useQueryClient();
 
-  // Fetch columns
   const {
     data: columns = [],
     isLoading: isColumnsLoading,
@@ -42,10 +46,7 @@ const Board: React.FC = () => {
       const cols = await GetKanbanColumnsAPI();
       return cols.sort((a, b) => a.position - b.position);
     },
-    // staleTime: 1000 * 60 * 5,
   });
-
-  // Fetch cards
 
   const [queryParams, setQueryParams] = useState<{
     organizationId: string;
@@ -57,6 +58,15 @@ const Board: React.FC = () => {
     sort: [],
   });
 
+  useEffect(() => {
+    if (selectedOrg) {
+      setQueryParams((prev) => ({
+        ...prev,
+        organizationId: selectedOrg,
+      }));
+    }
+  }, [selectedOrg]);
+
   const { data: cards = [], refetch: refetchCards } = useQuery({
     queryKey: ["fetchCardsAPI", queryParams],
     queryFn: ({ queryKey }) => {
@@ -65,11 +75,30 @@ const Board: React.FC = () => {
     },
   });
 
+  // const handleSortChange = (columnId: string, selected: string[]) => {
+  //   setQueryParams({ organizationId: selectedOrg, columnId, sort: selected });
+  // };
+
   const handleSortChange = (columnId: string, selected: string[]) => {
-    setQueryParams({ organizationId: selectedOrg, columnId, sort: selected });
+    setQueryParams((prev) => {
+      if (selected.length > 0) {
+        return {
+          ...prev,
+          organizationId: selectedOrg,
+          columnId,
+          sort: selected,
+        };
+      } else {
+        return {
+          ...prev,
+          organizationId: selectedOrg,
+          columnId: null,
+          sort: [],
+        };
+      }
+    });
   };
 
-  // Mutation for moveCard
   const { mutateAsync: mutateMoveCard, isPending: isMovingCard } = useMutation({
     mutationFn: ({
       id,
@@ -89,10 +118,10 @@ const Board: React.FC = () => {
     },
   });
 
-  // Mutation for createInquiryCard
   const { mutateAsync: mutateCreateInquiryCard, isPending: isCreatingCard } =
     useMutation({
       mutationFn: (data: {
+        organization_id: string;
         customer_id: string;
         commodity: string;
         budget: number;
@@ -200,11 +229,16 @@ const Board: React.FC = () => {
     commodity: string;
     budget: number;
   }) => {
-    await mutateCreateInquiryCard({
-      customer_id: data.customerId,
-      commodity: data.commodity,
-      budget: data.budget,
-    });
+    if (user?.organization == null) {
+      showError(null, "you don't have permission to create card");
+    } else {
+      await mutateCreateInquiryCard({
+        organization_id: user?.organization?.id,
+        customer_id: data.customerId,
+        commodity: data.commodity,
+        budget: data.budget,
+      });
+    }
   };
 
   const mouseSensor = useSensor(MouseSensor, {

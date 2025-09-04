@@ -20,7 +20,7 @@ export default function BoardPage() {
         <Header user={user} handleLogout={handleLogout} />
         <GlobalLoader />
         <div className="flex-1 bg-gray-200 p-6">
-          <Board />
+          <Board user={user} />
         </div>
       </OrganizationProvider>
     </div>

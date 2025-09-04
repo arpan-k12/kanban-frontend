@@ -4,6 +4,7 @@ import { loginUserAPI } from "../../api/auth.api";
 import { useAuth } from "../../context/AuthContext";
 import { useNavigate, Link } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
+import { showError } from "../../utils/toastUtils";
 
 export default function Login() {
   const { login } = useAuth();
@@ -28,6 +29,10 @@ export default function Login() {
     onSuccess: (data: any) => {
       login(data.data, data.token);
       navigate("/board");
+    },
+    onError: (error) => {
+      console.error("Failed to add card:", error);
+      showError(error, "invalid credential, Please try again ");
     },
   });
 

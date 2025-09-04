@@ -3,11 +3,13 @@ import type {
   AxiosResponseHeaders,
   RawAxiosResponseHeaders,
 } from "axios";
+import type { Organization } from "./organization.type";
 
 export interface User {
   id: string;
   username: string;
   email: string;
+  organization?: Organization;
   createdAt?: Date;
   updatedAt?: Date;
   deletedAt?: Date | null;

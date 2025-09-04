@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import type { User } from "../../types/user.type";
 import { getOrganization } from "../../api/organizationAPI";
 import { useOrganization } from "../../context/OrganizationContext";
@@ -16,6 +16,7 @@ interface HeaderProps {
 
 const Header: React.FC<HeaderProps> = ({ user, handleLogout }) => {
   // const [organizations, setOrganizations] = useState<Organization[]>([]);
+
   const { selectedOrg, setSelectedOrg } = useOrganization();
 
   const { data: organizations = [], isLoading } = useQuery<Organization[]>({
@@ -23,6 +24,12 @@ const Header: React.FC<HeaderProps> = ({ user, handleLogout }) => {
     queryFn: getOrganization,
     staleTime: 1000 * 60 * 5,
   });
+
+  useEffect(() => {
+    if (user?.organization?.id) {
+      setSelectedOrg(user.organization.id);
+    }
+  }, [user, setSelectedOrg]);
 
   const handleOrgChange = (orgId: string) => {
     setSelectedOrg(orgId);

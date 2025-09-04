@@ -27,7 +27,7 @@ api.interceptors.response.use(
   (error: AxiosError) => {
     if (error.response?.status === 401) {
       localStorage.removeItem("token");
-      window.location.href = "/signin";
+      window.location.href = "/login";
     }
     return Promise.reject(error);
   }
