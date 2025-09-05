@@ -26,11 +26,7 @@ import { useOrganization } from "../../context/OrganizationContext";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type { User } from "../../types/user.type";
 
-interface BoardProps {
-  user: User;
-}
-
-const Board: React.FC<BoardProps> = ({ user }) => {
+const Board: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [activeCardId, setActiveCardId] = useState<string | null>(null);
   const { selectedOrg } = useOrganization();
@@ -229,11 +225,11 @@ const Board: React.FC<BoardProps> = ({ user }) => {
     commodity: string;
     budget: number;
   }) => {
-    if (user?.organization == null) {
+    if (!selectedOrg) {
       showError(null, "you don't have permission to create card");
     } else {
       await mutateCreateInquiryCard({
-        organization_id: user?.organization?.id,
+        organization_id: selectedOrg,
         customer_id: data.customerId,
         commodity: data.commodity,
         budget: data.budget,

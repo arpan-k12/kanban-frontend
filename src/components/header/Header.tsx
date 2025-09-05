@@ -1,13 +1,9 @@
 import React, { useEffect } from "react";
 import type { User } from "../../types/user.type";
-import { getOrganization } from "../../api/organizationAPI";
+import { getUsersOrganizationByIdAPI } from "../../api/organizationAPI";
 import { useOrganization } from "../../context/OrganizationContext";
 import { useQuery } from "@tanstack/react-query";
-
-interface Organization {
-  id: string;
-  name: string;
-}
+import type { UserOrganizationType } from "../../types/userOrganization";
 
 interface HeaderProps {
   user: User;
@@ -19,29 +15,28 @@ const Header: React.FC<HeaderProps> = ({ user, handleLogout }) => {
 
   const { selectedOrg, setSelectedOrg } = useOrganization();
 
-  const { data: organizations = [], isLoading } = useQuery<Organization[]>({
-    queryKey: ["organizations"],
-    queryFn: getOrganization,
-    staleTime: 1000 * 60 * 5,
-  });
+  const { data: orgList, isLoading: isLoading } =
+    useQuery<UserOrganizationType>({
+      queryKey: ["getUsersOrganizationByIdAPI", user?.id],
+      queryFn: () => getUsersOrganizationByIdAPI(user?.id!),
+      enabled: !!user?.id,
+    });
 
   useEffect(() => {
-    if (user?.organization?.id) {
-      setSelectedOrg(user.organization.id);
+    if (
+      !isLoading &&
+      orgList &&
+      Array.isArray(orgList.organizations) &&
+      orgList.organizations.length > 0 &&
+      !selectedOrg
+    ) {
+      setSelectedOrg(orgList?.organizations[0].id);
     }
-  }, [user, setSelectedOrg]);
+  }, [orgList, isLoading, selectedOrg, setSelectedOrg]);
 
   const handleOrgChange = (orgId: string) => {
     setSelectedOrg(orgId);
   };
-
-  // const fetchOrganizations = async () => {
-  //   const response = await getOrganization();
-  //   setOrganizations(response);
-  // };
-  // const handleOrgChange = (orgId: string) => {
-  //   setSelectedOrg(orgId);
-  // };
 
   return (
     <div className="bg-gray-800 text-white p-4 flex justify-between">
@@ -53,14 +48,15 @@ const Header: React.FC<HeaderProps> = ({ user, handleLogout }) => {
           className="mr-4 bg-gray-700 text-white px-2 py-1 rounded"
           disabled={isLoading}
         >
-          <option value="">
-            {isLoading ? "Loading..." : "Select Organization"}
-          </option>
-          {organizations.map((org) => (
+          {isLoading && <option value="">{"Loading..."}</option>}
+          {orgList?.organizations.map((org) => (
             <option key={org.id} value={org.id}>
               {org.name}
             </option>
           ))}
+          {orgList?.organizations?.length == 0 && (
+            <option value="">No Organization</option>
+          )}
         </select>
         <span className="mr-4">{user?.username || user?.email}</span>
         <button

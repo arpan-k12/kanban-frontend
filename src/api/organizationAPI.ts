@@ -1,4 +1,3 @@
-import type { Organization } from "../types/organization.type";
 import type { AxiosResponse } from "../types/user.type.ts";
 import { request } from "./request.ts";
 
@@ -7,11 +6,20 @@ import { request } from "./request.ts";
 //   return response.data.data;
 // };
 
-export const getOrganization = async (): Promise<Organization[]> => {
-  const response: AxiosResponse<Organization[]> = await request({
-    url: "organization",
+// export const getOrganization = async (): Promise<Organization[]> => {
+//   const response: AxiosResponse<Organization[]> = await request({
+//     url: "organization",
+//     method: "GET",
+//   });
+
+//   return response?.data ?? [];
+// };
+
+export const getUsersOrganizationByIdAPI = async (id: string) => {
+  const response: AxiosResponse<any> = await request({
+    url: `user-organization/${id}`,
     method: "GET",
   });
 
-  return response?.data ?? [];
+  return response?.data;
 };
