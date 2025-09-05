@@ -1,1 +1,12 @@
 @import "tailwindcss";
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  --toastify-color-success: #0dd725 !important;
+  --toastify-color-error: #c40404 !important;
+}
+
+.Toastify__toast-container {
+  z-index: 100000 !important;
+}

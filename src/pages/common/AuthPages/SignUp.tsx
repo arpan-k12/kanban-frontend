@@ -2,7 +2,7 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { signupUserAPI } from "../../api/auth.api";
 import { useNavigate, Link } from "react-router-dom";
-import { useAuth } from "../../context/app/AuthContext";
+import { useAuth } from "../../context/AuthContext";
 import { useMutation } from "@tanstack/react-query";
 
 export default function Signup() {

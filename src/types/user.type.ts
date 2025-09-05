@@ -1,8 +1,3 @@
-import type {
-  AxiosRequestConfig,
-  AxiosResponseHeaders,
-  RawAxiosResponseHeaders,
-} from "axios";
 import type { Organization } from "./organization.type";
 
 export interface User {
@@ -15,14 +10,11 @@ export interface User {
   deletedAt?: Date | null;
 }
 
-export type AxiosResponse<T = any, D = any> = {
-  data: T;
-  message?: string;
-  status: number;
-  accessToken?: string | null;
-  statusText: string;
-  headers: RawAxiosResponseHeaders | AxiosResponseHeaders;
-  config: AxiosRequestConfig<D>;
-  request?: any;
-  position?: any;
-};
+// ///
+
+export interface adminUser {
+  id: number;
+  user_name: string;
+  email: string;
+  role: string;
+}

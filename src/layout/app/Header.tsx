@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import type { User } from "../../types/user.type";
 import { getUsersOrganizationByIdAPI } from "../../api/organizationAPI";
-import { useOrganization } from "../../context/OrganizationContext";
+import { useOrganization } from "../../context/app/OrganizationContext";
 import { useQuery } from "@tanstack/react-query";
 import type { UserOrganizationType } from "../../types/userOrganization";
 

@@ -1,5 +1,5 @@
 import type { Quote } from "../types/quote.type";
-import type { AxiosResponse } from "../types/user.type";
+import type { AxiosResponse } from "../types/Axios";
 import { request } from "./request";
 
 // export const createQuote = async (data: {

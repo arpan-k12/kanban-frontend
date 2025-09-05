@@ -1,4 +1,5 @@
 import type { Customer } from "../types/customer.type";
+import type { AxiosResponse } from "../types/Axios";
 
 // export const getAllCustomer = async (): Promise<Customer[]> => {
 //   const response = await api.get<{ data: Customer[] }>("/customer");
@@ -18,7 +19,6 @@ import type { Customer } from "../types/customer.type";
 // };
 
 // import {} from "../types/project";
-import type { AxiosResponse } from "../types/user.type";
 import { request } from "./request";
 
 export const GetAllCustomerAPI = async () => {

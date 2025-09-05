@@ -1,9 +1,9 @@
-import Header from "../components/header/Header";
-import Board from "../components/kanban/Board";
-import { useAuth } from "../context/AuthContext";
+import Header from "../../layout/app/Header";
+import Board from "../../components/kanban/Board";
+import { useAuth } from "../../context/app/AuthContext";
 import { useNavigate } from "react-router-dom";
-import { OrganizationProvider } from "../context/OrganizationContext";
-import GlobalLoader from "../utils/GlobalLoader";
+import { OrganizationProvider } from "../../context/app/OrganizationContext";
+import GlobalLoader from "../../utils/GlobalLoader";
 
 export default function BoardPage() {
   const { user, logout } = useAuth();

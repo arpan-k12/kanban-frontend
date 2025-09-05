@@ -1,6 +1,6 @@
 import api from ".";
+import type { AxiosResponse } from "../types/Axios";
 import type { CardData } from "../types/card.type";
-import type { AxiosResponse } from "../types/user.type";
 import { request } from "./request";
 
 // export const fetchCards = async (): Promise<CardData[]> => {

@@ -41,7 +41,7 @@ axios.interceptors.response.use(
     if (error?.response?.status === 403) {
       // removeUser();
       localStorage.removeItem("token");
-      window.location.href = "/login";
+      window.location.href = "/signin";
     }
     if (error?.response?.status === 401) {
       localStorage.removeItem("token");

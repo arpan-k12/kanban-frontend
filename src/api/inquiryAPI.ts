@@ -1,5 +1,6 @@
 import type { Inquiry } from "../types/inquiry.type";
-import type { AxiosResponse } from "../types/user.type";
+import type { AxiosResponse } from "../types/Axios";
+
 import { request } from "./request";
 
 // export const createInquiryCard = async (data: {

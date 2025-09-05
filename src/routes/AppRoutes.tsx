@@ -1,12 +1,12 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../context/app/AuthContext";
 import Login from "../modules/auth/Login";
 import Signup from "../modules/auth/Signup";
-import Board from "../pages/boardPage";
+import Board from "../pages/app/boardPage";
 import type { ReactElement } from "react";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import NotFoundPage from "../pages/NotFoundPage";
+import NotFoundPage from "../pages/common/NotFoundPage";
 
 const ProtectedRoute = ({ children }: { children: ReactElement }) => {
   const { token } = useAuth();

@@ -8,3 +8,10 @@ export interface Organization {
   updatedAt: Date;
   deletedAt?: Date;
 }
+
+export interface AddOrganizationData {
+  name: string;
+  address: string;
+  phone: string;
+  industry: string;
+}

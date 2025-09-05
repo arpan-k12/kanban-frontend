@@ -1,8 +1,8 @@
 import { createContext, useContext, useState } from "react";
 import type { ReactNode } from "react";
-import { getToken, getUser } from "../utils/storage";
-import { logoutUser } from "../api/auth.api";
-import { showError } from "../utils/toastUtils";
+import { getToken, getUser } from "../../utils/storage";
+import { logoutUser } from "../../api/auth.api";
+import { showError } from "../../utils/toastUtils";
 import { Navigate } from "react-router-dom";
 
 type AuthContextType = {

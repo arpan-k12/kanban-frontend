@@ -22,7 +22,7 @@ import type { CardData } from "../../types/card.type";
 import { toast } from "react-toastify";
 import { showError, showSuccess } from "../../utils/toastUtils";
 import Card from "./Card";
-import { useOrganization } from "../../context/OrganizationContext";
+import { useOrganization } from "../../context/app/OrganizationContext";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type { User } from "../../types/user.type";
 

@@ -1,12 +1,11 @@
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import { loginUserAPI } from "../../api/auth.api";
-import { useAuth } from "../../context/app/AuthContext";
+import { useAuth } from "../../context/AuthContext";
 import { useNavigate, Link } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
-import { showError } from "../../utils/toastUtils";
+import { loginUserAPI } from "../../api/auth.api";
 
-export default function Login() {
+export default function SignIn() {
   const { login } = useAuth();
   const navigate = useNavigate();
 
@@ -28,11 +27,7 @@ export default function Login() {
       loginUserAPI(email, password),
     onSuccess: (data: any) => {
       login(data.data, data.token);
-      navigate("/board");
-    },
-    onError: (error) => {
-      console.error("Failed to add card:", error);
-      showError(error, "invalid credential, Please try again ");
+      navigate("/dashboard");
     },
   });
 
@@ -42,7 +37,7 @@ export default function Login() {
         <h1 className="text-2xl font-bold mb-4">Login</h1>
 
         <Formik
-          initialValues={{ email: "", password: "" }}
+          initialValues={{ email: "joi@gmail.com", password: "test123" }}
           validationSchema={validationSchema}
           onSubmit={async (values, { setSubmitting, setFieldError }) => {
             try {
@@ -57,7 +52,7 @@ export default function Login() {
             }
           }}
         >
-          {({ isSubmitting }) => (
+          {({ isSubmitting, errors }) => (
             <Form>
               <div className="mb-3">
                 <Field
