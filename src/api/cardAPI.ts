@@ -1,4 +1,4 @@
-import api from ".";
+// import api from ".";
 import type { AxiosResponse } from "../types/Axios";
 import type { CardData } from "../types/card.type";
 import { request } from "./request";

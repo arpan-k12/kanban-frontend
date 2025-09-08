@@ -1,10 +1,10 @@
 import React from "react";
-import type { CardData } from "../../types/card.type";
+import type { CardData } from "../../../types/card.type";
 import { Pencil } from "lucide-react";
 import CardEditor from "../common/CardEditor";
-import { createDecisionAPI, updateDecisionAPI } from "../../api/decisionAPI";
-import { showSuccess } from "../../utils/toastUtils";
+import { createDecisionAPI, updateDecisionAPI } from "../../../api/decisionAPI";
 import { useMutation } from "@tanstack/react-query";
+import UseToast from "../../../hooks/useToast";
 
 interface Props {
   cardData: CardData;
@@ -111,14 +111,14 @@ const DecisionCard: React.FC<Props> = ({
                   reason: updated.reason,
                 },
               });
-              showSuccess("Decision Updated successfully");
+              UseToast("Decision Updated successfully", "success");
             } else {
               await mutateCreateDecision({
                 card_id: cardData.id,
                 decision: updated.decision,
                 reason: updated.reason,
               });
-              showSuccess("Decision Created successfully");
+              UseToast("Decision Created successfully", "success");
             }
 
             await reloadCards();

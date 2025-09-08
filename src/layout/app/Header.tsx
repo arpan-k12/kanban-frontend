@@ -1,17 +1,25 @@
 import React, { useEffect } from "react";
-import type { User } from "../../types/user.type";
 import { getUsersOrganizationByIdAPI } from "../../api/organizationAPI";
 import { useOrganization } from "../../context/app/OrganizationContext";
 import { useQuery } from "@tanstack/react-query";
 import type { UserOrganizationType } from "../../types/userOrganization";
+import { useAuthStore } from "../../store/authStore";
+import { useNavigate } from "react-router-dom";
 
-interface HeaderProps {
-  user: User;
-  handleLogout: () => void;
-}
-
-const Header: React.FC<HeaderProps> = ({ user, handleLogout }) => {
+const Header: React.FC = () => {
   // const [organizations, setOrganizations] = useState<Organization[]>([]);
+  const navigate = useNavigate();
+  const { user, logout } = useAuthStore();
+
+  // const { user, logout } = useAuthStore((state) => ({
+  //   user: state.user,
+  //   logout: state.logout,
+  // }));
+
+  const handleLogout = () => {
+    logout();
+    navigate("/signin");
+  };
 
   const { selectedOrg, setSelectedOrg } = useOrganization();
 

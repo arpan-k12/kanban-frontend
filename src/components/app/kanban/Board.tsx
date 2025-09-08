@@ -13,18 +13,18 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import Column from "./Column";
-import { GetKanbanColumnsAPI } from "../../api/kanbanColumnAPI";
-import { fetchCardsAPI, moveCard } from "../../api/cardAPI";
+import { GetKanbanColumnsAPI } from "../../../api/kanbanColumnAPI";
+import { fetchCardsAPI, moveCard } from "../../../api/cardAPI";
 import InquiryModal from "../InquiryModal";
-import { createInquiryCardAPI } from "../../api/inquiryAPI";
-import type { ColumnType } from "../../types/column.type";
-import type { CardData } from "../../types/card.type";
+import { createInquiryCardAPI } from "../../../api/inquiryAPI";
+import type { ColumnType } from "../../../types/column.type";
+import type { CardData } from "../../../types/card.type";
 import { toast } from "react-toastify";
-import { showError, showSuccess } from "../../utils/toastUtils";
 import Card from "./Card";
-import { useOrganization } from "../../context/app/OrganizationContext";
+import { useOrganization } from "../../../context/app/OrganizationContext";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import type { User } from "../../types/user.type";
+import type { User } from "../../../types/user.type";
+import UseToast from "../../../hooks/useToast";
 
 const Board: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -107,10 +107,10 @@ const Board: React.FC = () => {
     }) => moveCard(id, destinationColumnId, newCard_position),
     onSuccess: async () => {
       await refetchCards();
-      toast.success("Card moved successfully!");
+      UseToast("Card moved successfully!", "success");
     },
     onError: () => {
-      toast.error("Failed to move card!");
+      UseToast("Failed to move card!", "error");
     },
   });
 
@@ -123,12 +123,13 @@ const Board: React.FC = () => {
         budget: number;
       }) => createInquiryCardAPI(data),
       onSuccess: async () => {
-        showSuccess("Card Created successfully!");
+        UseToast("Card Created successfully!", "success");
+
         await refetchCards();
       },
-      onError: (error) => {
+      onError: (error: any) => {
         console.error("Failed to add card:", error);
-        showError(error, "Failed to create card");
+        UseToast(error, "error");
       },
     });
 
@@ -226,7 +227,7 @@ const Board: React.FC = () => {
     budget: number;
   }) => {
     if (!selectedOrg) {
-      showError(null, "you don't have permission to create card");
+      UseToast("you don't have permission to create card", "error");
     } else {
       await mutateCreateInquiryCard({
         organization_id: selectedOrg,

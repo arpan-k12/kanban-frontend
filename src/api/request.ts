@@ -1,16 +1,21 @@
 import axios from "axios";
 import type { AxiosResponse, ResponseType } from "axios";
+import { useAuthStore } from "../store/authStore";
 
 axios.interceptors.request.use(
   function (config) {
-    const token = localStorage.getItem("token");
+    let authToken = useAuthStore.getState().token;
+
+    useAuthStore.subscribe((state) => {
+      authToken = state.token;
+    });
 
     if (!config.headers) {
       config.headers = {} as any;
     }
 
-    if (token) {
-      config.headers["Authorization"] = `Bearer ${token}`;
+    if (authToken) {
+      config.headers["Authorization"] = `Bearer ${authToken}`;
     }
 
     config.headers["Content-Type"] = "application/json";
@@ -38,14 +43,14 @@ axios.interceptors.response.use(
     return Promise.reject(response);
   },
   function (error) {
-    if (error?.response?.status === 403) {
+    if (error?.response?.status === 403 || error?.response?.status === 401) {
       // removeUser();
       localStorage.removeItem("token");
       window.location.href = "/signin";
     }
-    if (error?.response?.status === 401) {
-      localStorage.removeItem("token");
-    }
+    // if (error?.response?.status === 401) {
+    //   localStorage.removeItem("token");
+    // }
 
     const message =
       error.response?.status === 404

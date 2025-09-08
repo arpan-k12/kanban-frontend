@@ -1,11 +1,12 @@
 import { useEffect, useRef } from "react";
 
-import { useSidebar } from "../context/SidebarContext";
-import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { useSidebar } from "../../context/admin/SidebarContext";
+import { useAuthStore } from "../../store/authStore";
 
-const AppHeader: React.FC = () => {
-  const { logout } = useAuth();
+const AdminHeader: React.FC = () => {
+  const { logout } = useAuthStore();
+
   const { isMobileOpen, toggleSidebar, toggleMobileSidebar } = useSidebar();
   const navigate = useNavigate();
 
@@ -167,4 +168,4 @@ const AppHeader: React.FC = () => {
   );
 };
 
-export default AppHeader;
+export default AdminHeader;

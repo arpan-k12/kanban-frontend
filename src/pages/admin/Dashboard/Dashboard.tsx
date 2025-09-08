@@ -1,7 +1,7 @@
-import type { User } from "../../types/user";
-import UserList from "../../components/user/UserList";
 import { useQuery } from "@tanstack/react-query";
-import { GetAllUsersAPI } from "../../api/users.api";
+import type { User } from "../../../types/user.type";
+import { GetAllUsersAPI } from "../../../api/users.api";
+import UserList from "../../../components/admin/user/UserList";
 
 export default function Dashboard() {
   const {

@@ -1,12 +1,15 @@
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import { useAuth } from "../../context/AuthContext";
 import { useNavigate, Link } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
-import { loginUserAPI } from "../../api/auth.api";
+import UseToast from "../../../hooks/useToast";
+import { loginUserAPI } from "../../../api/auth.api";
+import { useAuthStore } from "../../../store/authStore";
 
 export default function SignIn() {
-  const { login } = useAuth();
+  const { login } = useAuthStore();
+
+  // const { login } = useAuth();
   const navigate = useNavigate();
 
   const validationSchema = Yup.object({
@@ -27,7 +30,17 @@ export default function SignIn() {
       loginUserAPI(email, password),
     onSuccess: (data: any) => {
       login(data.data, data.token);
-      navigate("/dashboard");
+      if (data?.data?.role == "0") {
+        navigate("/dashboard");
+      } else if (data?.data?.role == "1") {
+        navigate("/board");
+      } else {
+        navigate("/signin");
+        UseToast(
+          error?.message || "Failed to Login, Please Try Again",
+          "error"
+        );
+      }
     },
   });
 
@@ -52,7 +65,7 @@ export default function SignIn() {
             }
           }}
         >
-          {({ isSubmitting, errors }) => (
+          {({ isSubmitting }) => (
             <Form>
               <div className="mb-3">
                 <Field
@@ -84,7 +97,7 @@ export default function SignIn() {
 
               <button
                 type="submit"
-                disabled={isSubmitting}
+                disabled={isSubmitting || isPending}
                 className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600 disabled:opacity-50"
               >
                 {isSubmitting ? "Signing in..." : "Sign In"}

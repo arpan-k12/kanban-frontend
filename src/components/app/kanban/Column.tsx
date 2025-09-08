@@ -3,8 +3,8 @@ import { useDroppable } from "@dnd-kit/core";
 import Card from "./Card";
 import { SortAsc } from "lucide-react";
 import MultiSelectDropdown from "../common/MultiSelectDropdown";
-import { multiOptions } from "../../helper/multiOptions";
-import type { ColumnType } from "../../types/column.type";
+import { multiOptions } from "../../../helper/multiOptions";
+import type { ColumnType } from "../../../types/column.type";
 
 interface ColumnProps {
   id: string;

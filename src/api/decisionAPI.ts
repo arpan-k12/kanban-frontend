@@ -1,7 +1,7 @@
 import type { Decision } from "../types/decision.type";
 import type { AxiosResponse } from "../types/Axios";
 
-import api from "./index";
+// import api from "./index";
 import { request } from "./request";
 
 // export const createDecision = async (data: {

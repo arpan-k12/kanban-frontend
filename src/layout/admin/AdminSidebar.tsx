@@ -1,6 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
 import { Building, Grid, MoreHorizontal, UserCircle } from "lucide-react";
-import { useSidebar } from "../context/SidebarContext";
+import { useSidebar } from "../../context/admin/SidebarContext";
 
 type NavItem = {
   name: string;
@@ -19,7 +19,7 @@ const navItems: NavItem[] = [
   // { icon: <Box size={18} />, name: "Projects", path: "/projects" },
 ];
 
-const AppSidebar: React.FC = () => {
+const AdminSidebar: React.FC = () => {
   const { isExpanded, isMobileOpen, isHovered, setIsHovered } = useSidebar();
   const location = useLocation();
 
@@ -92,4 +92,4 @@ const AppSidebar: React.FC = () => {
   );
 };
 
-export default AppSidebar;
+export default AdminSidebar;

@@ -1,9 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import { Plus } from "lucide-react";
-import { GetUsersOrganizationAPI } from "../../api/usersOrganization.api";
-import UsersOrganizationList from "../../components/usersOrganization/UsersOrganizationList";
-import type { UserOrganizationType } from "../../types/userOrganization";
+import type { UserOrganizationType } from "../../../types/userOrganization";
+import { GetUsersOrganizationAPI } from "../../../api/usersOrganization.api";
+import UsersOrganizationList from "../../../components/admin/usersOrganization/UsersOrganizationList";
 
 export default function UsersOrganization() {
   const {

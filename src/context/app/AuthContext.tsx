@@ -2,8 +2,8 @@ import { createContext, useContext, useState } from "react";
 import type { ReactNode } from "react";
 import { getToken, getUser } from "../../utils/storage";
 import { logoutUser } from "../../api/auth.api";
-import { showError } from "../../utils/toastUtils";
 import { Navigate } from "react-router-dom";
+import UseToast from "../../hooks/useToast";
 
 type AuthContextType = {
   user: any;
@@ -22,7 +22,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const login = (user: any, token: string) => {
     if (!user || !token) {
       <Navigate to="/login" />;
-      showError("Something went wrong, Please Login again");
+      UseToast("Something went wrong, Please Login again", "error");
     }
     setUser(user);
     setToken(token);

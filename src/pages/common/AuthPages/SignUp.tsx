@@ -1,13 +1,14 @@
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import { signupUserAPI } from "../../api/auth.api";
 import { useNavigate, Link } from "react-router-dom";
-import { useAuth } from "../../context/AuthContext";
 import { useMutation } from "@tanstack/react-query";
+import { signupUserAPI } from "../../../api/auth.api";
+import UseToast from "../../../hooks/useToast";
+import { useAuthStore } from "../../../store/authStore";
 
 export default function Signup() {
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const { login } = useAuthStore();
 
   const validationSchema = Yup.object({
     username: Yup.string()
@@ -42,7 +43,15 @@ export default function Signup() {
     }) => signupUserAPI(username, email, password, confirmPassword),
     onSuccess: (data: any) => {
       login(data.data, data.token);
-      navigate("/board");
+      if (data?.data?.role == "1") {
+        navigate("/board");
+      } else {
+        navigate("/signin");
+        UseToast(
+          error?.message || "Failed to signup, Please Try Again",
+          "error"
+        );
+      }
     },
   });
 
@@ -140,7 +149,7 @@ export default function Signup() {
 
               <p className="text-sm mt-3">
                 Already have an account?{" "}
-                <Link to="/login" className="text-blue-600 hover:underline">
+                <Link to="/signin" className="text-blue-600 hover:underline">
                   Login
                 </Link>
               </p>

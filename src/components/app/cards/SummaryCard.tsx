@@ -1,10 +1,10 @@
 import React from "react";
 import CardEditor from "../common/CardEditor";
-import type { CardData } from "../../types/card.type";
+import type { CardData } from "../../../types/card.type";
 import { Pencil } from "lucide-react";
-import { showSuccess } from "../../utils/toastUtils";
-import { updateCardSummaryAPI } from "../../api/cardAPI";
+import { updateCardSummaryAPI } from "../../../api/cardAPI";
 import { useMutation } from "@tanstack/react-query";
+import UseToast from "../../../hooks/useToast";
 
 interface Props {
   cardData: CardData;
@@ -67,7 +67,7 @@ const SummaryCard: React.FC<Props> = ({
               summary: updated.summary,
             });
             await reloadCards();
-            showSuccess("Inquiry Updated successfully");
+            UseToast("Inquiry Updated successfully", "success");
             setIsEditing(false);
           }}
           onCancel={() => setIsEditing(false)}

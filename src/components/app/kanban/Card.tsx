@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import type { CardData } from "../../types/card.type";
+import type { CardData } from "../../../types/card.type";
 import InquiryCard from "../cards/InquiryCard";
 import SummaryCard from "../cards/SummaryCard";
 import QuoteCard from "../cards/QuoteCard";

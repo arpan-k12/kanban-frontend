@@ -1,11 +1,11 @@
 import React from "react";
-import type { CardData } from "../../types/card.type";
+import type { CardData } from "../../../types/card.type";
 import CardEditor from "../common/CardEditor";
 import { Pencil } from "lucide-react";
-import { updateCustomerAPI } from "../../api/customerAPI";
-import { updateInquiryAPI } from "../../api/inquiryAPI";
-import { showError, showSuccess } from "../../utils/toastUtils";
+import { updateCustomerAPI } from "../../../api/customerAPI";
+import { updateInquiryAPI } from "../../../api/inquiryAPI";
 import { useMutation } from "@tanstack/react-query";
+import UseToast from "../../../hooks/useToast";
 
 interface Props {
   cardData: CardData;
@@ -110,10 +110,11 @@ const InquiryCard: React.FC<Props> = ({
               }
 
               await reloadCards();
-              showSuccess("Inquiry updated successfully!");
+              UseToast("Inquiry updated successfully!", "success");
+
               setIsEditing(false);
-            } catch (error) {
-              showError(error, "Failed to update inquiry");
+            } catch (error: any) {
+              UseToast(error, "error");
             }
           }}
           onCancel={() => setIsEditing(false)}

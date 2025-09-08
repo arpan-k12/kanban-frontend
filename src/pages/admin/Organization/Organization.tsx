@@ -1,11 +1,11 @@
 "use client";
 import { useQuery } from "@tanstack/react-query";
-import OrganizationList from "../../components/organization/OrganizationList";
-import { GetOrganizationAPI } from "../../api/organization.api";
 
 import { Link } from "react-router-dom";
 import { Plus } from "lucide-react";
-import type { Organization } from "../../types/organization";
+import type { Organization } from "../../../types/organization.type";
+import { GetOrganizationAPI } from "../../../api/organizationAPI";
+import OrganizationList from "../../../components/admin/organization/OrganizationList";
 
 export default function Organization() {
   const {
