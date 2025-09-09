@@ -13,6 +13,7 @@ export default function RootRoutes() {
   return (
     <BrowserRouter>
       <Routes>
+        <Route path="/" element={<Navigate to="/signin" replace />} />
         {/* <Route path="/" element={<Navigate to="/signin" />} /> */}
         <Route path="/signin" element={<SignIn />} />
         <Route path="/signup" element={<Signup />} />

@@ -1,24 +1,18 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { getToken, getUser } from "../utils/storage";
 import { logoutUser } from "../api/auth.api";
-
-export type Permission = "can_add" | "can_edit" | "can_delete";
-
-// export interface UserType {
-//   id: string;
-//   username: string;
-//   role: "0" | "1";
-//   //   permissions?: Permission[];
-// }
 
 interface AuthState {
   user: any | null;
   token: string | null;
   //   permissions: Permission[];
+  permissions: {
+    flat: string[];
+    byFeature: Record<string, string[]>;
+  } | null;
   login: (user: any, token: string) => void;
   logout: () => void;
-  //   hasPermission: (perm: Permission) => boolean;
+  hasPermission: (perm: string, feature?: string) => boolean;
 }
 
 export const useAuthStore = create<AuthState>()(
@@ -26,12 +20,13 @@ export const useAuthStore = create<AuthState>()(
     (set, get) => ({
       user: null,
       token: null,
+      permissions: null,
 
       login: (user, token) => {
         set({
           user,
           token,
-          // permissions: user.permissions || []
+          permissions: user.permissions || { flat: [], byFeature: {} },
         });
       },
 
@@ -40,17 +35,28 @@ export const useAuthStore = create<AuthState>()(
         set({
           user: null,
           token: null,
-          // permissions: []
+          permissions: null,
         });
       },
 
-      // hasPermission: (perm) => get().permissions?.includes(perm) ?? false,
+      hasPermission: (perm: any, feature: any) => {
+        const { permissions } = get();
+
+        if (!permissions) return false;
+
+        if (feature) {
+          return permissions.byFeature[feature]?.includes(perm) ?? false;
+        }
+
+        return permissions.flat.includes(perm);
+      },
     }),
     {
       name: "auth-storage",
       partialize: (state) => ({
         user: state.user,
         token: state.token,
+        permissions: state.permissions,
       }),
     }
   )

@@ -25,12 +25,13 @@ import { useOrganization } from "../../../context/app/OrganizationContext";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type { User } from "../../../types/user.type";
 import UseToast from "../../../hooks/useToast";
+import { useAuthStore } from "../../../store/authStore";
 
 const Board: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [activeCardId, setActiveCardId] = useState<string | null>(null);
   const { selectedOrg } = useOrganization();
-  const queryClient = useQueryClient();
+  const { hasPermission } = useAuthStore();
 
   const {
     data: columns = [],
@@ -69,6 +70,7 @@ const Board: React.FC = () => {
       const [, params] = queryKey as [string, typeof queryParams];
       return fetchCardsAPI(params);
     },
+    enabled: !!selectedOrg,
   });
 
   // const handleSortChange = (columnId: string, selected: string[]) => {
@@ -254,12 +256,14 @@ const Board: React.FC = () => {
     >
       <div className="flex justify-between items-center px-6 py-4">
         <h1 className="text-xl font-bold">Kanban Board</h1>
-        <button
-          onClick={() => setIsModalOpen(true)}
-          className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
-        >
-          + Add Card
-        </button>
+        {hasPermission("can_create", "card") && (
+          <button
+            onClick={() => setIsModalOpen(true)}
+            className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+          >
+            + Add Card
+          </button>
+        )}
       </div>
 
       <div className="flex flex-wrap justify-evenly gap-6 p-6">

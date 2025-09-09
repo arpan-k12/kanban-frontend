@@ -1,6 +1,7 @@
 import axios from "axios";
 import type { AxiosResponse, ResponseType } from "axios";
 import { useAuthStore } from "../store/authStore";
+import UseToast from "../hooks/useToast";
 
 axios.interceptors.request.use(
   function (config) {
@@ -43,11 +44,18 @@ axios.interceptors.response.use(
     return Promise.reject(response);
   },
   function (error) {
-    if (error?.response?.status === 403 || error?.response?.status === 401) {
-      // removeUser();
-      localStorage.removeItem("token");
+    if (error?.response?.status === 401) {
+      useAuthStore.getState().logout();
+      // localStorage.removeItem("token");
+      // window.location.href = "/signin";
+    }
+    if (error?.response?.status === 400 || error?.response?.status === 403) {
+      useAuthStore.getState().logout();
+      // localStorage.removeItem("token");
+      UseToast(error?.message || "User No longer exist", "error");
       window.location.href = "/signin";
     }
+
     // if (error?.response?.status === 401) {
     //   localStorage.removeItem("token");
     // }

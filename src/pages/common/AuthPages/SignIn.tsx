@@ -21,11 +21,7 @@ export default function SignIn() {
       .required("Password is required"),
   });
 
-  const {
-    mutateAsync: mutateLogin,
-    isPending,
-    error,
-  } = useMutation({
+  const { mutateAsync: mutateLogin, isPending } = useMutation({
     mutationFn: ({ email, password }: { email: string; password: string }) =>
       loginUserAPI(email, password),
     onSuccess: (data: any) => {
@@ -36,11 +32,11 @@ export default function SignIn() {
         navigate("/board");
       } else {
         navigate("/signin");
-        UseToast(
-          error?.message || "Failed to Login, Please Try Again",
-          "error"
-        );
       }
+    },
+    onError: (error: any) => {
+      console.error(error);
+      UseToast(error?.message || "Failed to Login, Please Try Again", "error");
     },
   });
 

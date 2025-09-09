@@ -1,4 +1,5 @@
 import type { Organization } from "./organization.type";
+import type { Permissions } from "./permission.type";
 
 export interface User {
   id: string;
@@ -8,6 +9,7 @@ export interface User {
   createdAt?: Date;
   updatedAt?: Date;
   deletedAt?: Date | null;
+  permissions: Permissions;
 }
 
 // ///

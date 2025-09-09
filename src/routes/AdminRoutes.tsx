@@ -11,6 +11,8 @@ import UsersOrganizationLayout from "../layout/admin/UsersOrganizationLayout";
 import UsersOrganization from "../pages/admin/Users/UsersOrganization";
 import AssignUsersOrganization from "../components/admin/usersOrganization/AssignUsersOrganization";
 import EditAssignUsersOrganization from "../components/admin/usersOrganization/EditAssignUsersOrganization";
+import DashboardLayout from "../layout/admin/DashboardLayout";
+import EditDashboard from "../components/admin/user/EditDashboard";
 
 export default function AdminRoutes() {
   return (
@@ -20,7 +22,13 @@ export default function AdminRoutes() {
           <Route index element={<Dashboard />} />
           <Route path="/dashboard" element={<Dashboard />} />
 
-          <Route path="/organization" element={<Organization />} />
+          <Route path="dashboard" element={<DashboardLayout />}>
+            <Route index element={<Dashboard />} />
+            {/* <Route path="add-Dashboard" element={<AddDashboard />} /> */}
+            <Route path="edit-dashboard/:id" element={<EditDashboard />} />
+          </Route>
+
+          {/* <Route path="/organization" element={<Organization />} /> */}
 
           <Route path="organization" element={<OrganizationLayout />}>
             <Route index element={<Organization />} />

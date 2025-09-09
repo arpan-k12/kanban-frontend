@@ -25,11 +25,7 @@ export default function Signup() {
       .required("Confirm Password is required"),
   });
 
-  const {
-    mutateAsync: mutateSignup,
-    isPending,
-    error,
-  } = useMutation({
+  const { mutateAsync: mutateSignup, isPending } = useMutation({
     mutationFn: ({
       username,
       email,
@@ -47,11 +43,11 @@ export default function Signup() {
         navigate("/board");
       } else {
         navigate("/signin");
-        UseToast(
-          error?.message || "Failed to signup, Please Try Again",
-          "error"
-        );
       }
+    },
+    onError: (error: any) => {
+      console.error(error);
+      UseToast(error?.message || "Failed to signup, Please Try Again", "error");
     },
   });
 
