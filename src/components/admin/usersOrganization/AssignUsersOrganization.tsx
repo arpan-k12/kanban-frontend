@@ -7,7 +7,7 @@ import { GetAllUsersAPI } from "../../../api/users.api";
 import { GetOrganizationAPI } from "../../../api/organizationAPI";
 import { AssignUserOrganizationAPI } from "../../../api/usersOrganization.api";
 import UseToast from "../../../hooks/useToast";
-import MultiSelectDropdown from "../../app/common/MultiSelectDropdown";
+import MultiSelectOrgDropdown from "../common/MultiSelectOrgDropdown";
 
 const validationSchema = Yup.object({
   user_id: Yup.string().required("User is required"),
@@ -72,7 +72,6 @@ export default function AssignUsersOrganization() {
       </div>
 
       <form onSubmit={formik.handleSubmit} className="space-y-5">
-        {/* User Select */}
         <div>
           <label className="block text-sm font-medium">User</label>
           <select
@@ -96,10 +95,9 @@ export default function AssignUsersOrganization() {
           )}
         </div>
 
-        {/* Multi-Select Organization */}
         <div>
           <label className="block text-sm font-medium">Organizations</label>
-          <MultiSelectDropdown
+          <MultiSelectOrgDropdown
             options={
               orgsData?.map((org: any) => ({
                 label: `${org.name} (${org.industry})`,
@@ -117,7 +115,6 @@ export default function AssignUsersOrganization() {
             )}
         </div>
 
-        {/* Actions */}
         <div className="flex justify-end space-x-3 pt-4">
           <button
             type="button"

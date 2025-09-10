@@ -15,16 +15,14 @@ import { request } from "./request.ts";
 //   return response?.data ?? [];
 // };
 
-export const getUsersOrganizationByIdAPI = async (id: string) => {
-  const response: AxiosResponse<any> = await request({
-    url: `user-organization/${id}`,
-    method: "GET",
-  });
+// export const getUsersOrganizationByIdAPI = async (id: string) => {
+//   const response: AxiosResponse<any> = await request({
+//     url: `user-organization/${id}`,
+//     method: "GET",
+//   });
 
-  return response?.data;
-};
-
-//  ///
+//   return response?.data;
+// };
 
 export const GetOrganizationAPI = async () => {
   const response: AxiosResponse<any> = await request({

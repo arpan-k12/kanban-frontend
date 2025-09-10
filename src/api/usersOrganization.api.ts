@@ -25,5 +25,5 @@ export const getUsersOrganizationByIdAPI = async (id: string) => {
     method: "GET",
   });
 
-  return response;
+  return response?.data;
 };

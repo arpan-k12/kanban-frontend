@@ -44,12 +44,12 @@ axios.interceptors.response.use(
     return Promise.reject(response);
   },
   function (error) {
-    if (error?.response?.status === 401) {
+    if (error?.response?.status === 400) {
       useAuthStore.getState().logout();
       // localStorage.removeItem("token");
       // window.location.href = "/signin";
     }
-    if (error?.response?.status === 400 || error?.response?.status === 403) {
+    if (error?.response?.status === 401 || error?.response?.status === 403) {
       useAuthStore.getState().logout();
       // localStorage.removeItem("token");
       UseToast(error?.message || "User No longer exist", "error");

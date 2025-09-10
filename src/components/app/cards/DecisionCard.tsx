@@ -5,6 +5,7 @@ import CardEditor from "../common/CardEditor";
 import { createDecisionAPI, updateDecisionAPI } from "../../../api/decisionAPI";
 import { useMutation } from "@tanstack/react-query";
 import UseToast from "../../../hooks/useToast";
+import { useAuthStore } from "../../../store/authStore";
 
 interface Props {
   cardData: CardData;
@@ -19,6 +20,7 @@ const DecisionCard: React.FC<Props> = ({
   setIsEditing,
   reloadCards,
 }) => {
+  const { hasPermission } = useAuthStore();
   const { customer, inquiry, decision, quote } = cardData;
 
   const { mutateAsync: mutateCreateDecision } = useMutation({
@@ -37,7 +39,7 @@ const DecisionCard: React.FC<Props> = ({
 
   return (
     <div className="relative border rounded-md p-2 bg-white shadow-sm">
-      {!decision && (
+      {!decision && hasPermission("can_create", "decision") && (
         <button
           onClick={() => setIsEditing(true)}
           onMouseDown={(e) => e.stopPropagation()}

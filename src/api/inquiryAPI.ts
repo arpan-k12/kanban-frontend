@@ -3,27 +3,6 @@ import type { AxiosResponse } from "../types/Axios";
 
 import { request } from "./request";
 
-// export const createInquiryCard = async (data: {
-//   customer_id: string;
-//   commodity: string;
-//   budget: number;
-// }): Promise<Inquiry> => {
-//   const response = await api.post<{ data: Inquiry }>("/inquiry", data);
-//   return response.data.data;
-// };
-
-// export const updateInquiry = async (
-//   id: string,
-//   data: {
-//     customer_id: string;
-//     commodity: string;
-//     budget: number;
-//   }
-// ): Promise<Inquiry> => {
-//   const response = await api.patch<{ data: Inquiry }>(`/inquiry/${id}`, data);
-//   return response.data.data;
-// };
-
 export const createInquiryCardAPI = async (data: {
   organization_id: string;
   customer_id: string;

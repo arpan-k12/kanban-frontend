@@ -5,6 +5,7 @@ import { Pencil } from "lucide-react";
 import { updateCardSummaryAPI } from "../../../api/cardAPI";
 import { useMutation } from "@tanstack/react-query";
 import UseToast from "../../../hooks/useToast";
+import { useAuthStore } from "../../../store/authStore";
 
 interface Props {
   cardData: CardData;
@@ -19,25 +20,38 @@ const SummaryCard: React.FC<Props> = ({
   setIsEditing,
   reloadCards,
 }) => {
+  const { hasPermission } = useAuthStore();
   const { customer, inquiry } = cardData;
 
-  // Mutation for card summary update
   const { mutateAsync: mutateCardSummary } = useMutation({
     mutationFn: ({ id, summary }: { id: string; summary: string }) =>
       updateCardSummaryAPI(id, summary),
+    onSuccess: async (data: any) => {
+      if (data?.status) {
+        UseToast(data.message, "success");
+      }
+    },
+    onError: (error: any) => {
+      console.error(error);
+      UseToast(error, "error");
+    },
   });
 
   return (
     <div className="relative border rounded-md p-2 bg-white shadow-sm">
-      <button
-        onClick={() => setIsEditing(true)}
-        onMouseDown={(e) => e.stopPropagation()}
-        onPointerDown={(e) => e.stopPropagation()}
-        className="absolute top-2 right-2 text-gray-500 hover:text-blue-600 cursor-pointer"
-        aria-label="Edit inquiry"
-      >
-        <Pencil size={16} />
-      </button>
+      {(!cardData?.summary
+        ? hasPermission("can_create", "discussion")
+        : hasPermission("can_edit", "discussion")) && (
+        <button
+          onClick={() => setIsEditing(true)}
+          onMouseDown={(e) => e.stopPropagation()}
+          onPointerDown={(e) => e.stopPropagation()}
+          className="absolute top-2 right-2 text-gray-500 hover:text-blue-600 cursor-pointer"
+          aria-label="Edit inquiry"
+        >
+          <Pencil size={16} />
+        </button>
+      )}
       <h3 className="text-sm font-semibold text-gray-700">
         {customer?.c_name}
       </h3>
@@ -67,7 +81,6 @@ const SummaryCard: React.FC<Props> = ({
               summary: updated.summary,
             });
             await reloadCards();
-            UseToast("Inquiry Updated successfully", "success");
             setIsEditing(false);
           }}
           onCancel={() => setIsEditing(false)}

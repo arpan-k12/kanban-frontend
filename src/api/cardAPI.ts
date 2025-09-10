@@ -87,12 +87,12 @@ export const moveCard = async (
 export const updateCardSummaryAPI = async (
   id: string,
   summary: string
-): Promise<CardData> => {
+): Promise<any> => {
   const response: AxiosResponse<CardData> = await request({
     url: `card/summary/${id}`,
     method: "PATCH",
     body: { summary },
   });
 
-  return response?.data ?? ({} as CardData);
+  return response;
 };

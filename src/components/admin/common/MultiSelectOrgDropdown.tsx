@@ -1,13 +1,13 @@
 import React, { useState, useRef, useEffect } from "react";
 
-interface MultiSelectDropdownProps {
+interface MultiSelectOrgDropdownProps {
   options: { label: string; value: string }[];
   selected: string[];
   onChange: (selected: string[]) => void;
   placeholder?: string;
 }
 
-const MultiSelectDropdown: React.FC<MultiSelectDropdownProps> = ({
+const MultiSelectOrgDropdown: React.FC<MultiSelectOrgDropdownProps> = ({
   options,
   selected,
   onChange,
@@ -97,4 +97,4 @@ const MultiSelectDropdown: React.FC<MultiSelectDropdownProps> = ({
   );
 };
 
-export default MultiSelectDropdown;
+export default MultiSelectOrgDropdown;

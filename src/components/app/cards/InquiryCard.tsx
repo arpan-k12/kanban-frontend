@@ -6,6 +6,7 @@ import { updateCustomerAPI } from "../../../api/customerAPI";
 import { updateInquiryAPI } from "../../../api/inquiryAPI";
 import { useMutation } from "@tanstack/react-query";
 import UseToast from "../../../hooks/useToast";
+import { useAuthStore } from "../../../store/authStore";
 
 interface Props {
   cardData: CardData;
@@ -20,6 +21,7 @@ const InquiryCard: React.FC<Props> = ({
   setIsEditing,
   reloadCards,
 }) => {
+  const { hasPermission } = useAuthStore();
   const { customer, inquiry, customer_id } = cardData;
 
   // Mutation for customer update
@@ -49,15 +51,17 @@ const InquiryCard: React.FC<Props> = ({
 
   return (
     <div className="relative border rounded-md p-2 bg-white shadow-sm">
-      <button
-        onClick={() => setIsEditing(true)}
-        onMouseDown={(e) => e.stopPropagation()}
-        onPointerDown={(e) => e.stopPropagation()}
-        className="absolute top-2 right-2 text-gray-500 hover:text-blue-600 cursor-pointer"
-        aria-label="Edit inquiry"
-      >
-        <Pencil size={16} />
-      </button>
+      {hasPermission("can_edit", "inquiry") && (
+        <button
+          onClick={() => setIsEditing(true)}
+          onMouseDown={(e) => e.stopPropagation()}
+          onPointerDown={(e) => e.stopPropagation()}
+          className="absolute top-2 right-2 text-gray-500 hover:text-blue-600 cursor-pointer"
+          aria-label="Edit inquiry"
+        >
+          <Pencil size={16} />
+        </button>
+      )}
       <h3 className="text-sm font-semibold text-gray-700">
         {customer?.c_name}
       </h3>

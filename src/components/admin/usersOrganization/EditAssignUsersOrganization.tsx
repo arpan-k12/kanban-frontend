@@ -4,14 +4,12 @@ import * as Yup from "yup";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useNavigate, useParams } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
-import {
-  GetOrganizationAPI,
-  getUsersOrganizationByIdAPI,
-} from "../../../api/organizationAPI";
+import { getUsersOrganizationByIdAPI } from "../../../api/usersOrganization.api";
 import { GetAllUsersAPI } from "../../../api/users.api";
 import { AssignUserOrganizationAPI } from "../../../api/usersOrganization.api";
 import UseToast from "../../../hooks/useToast";
-import MultiSelectDropdown from "../../app/common/MultiSelectDropdown";
+import MultiSelectOrgDropdown from "../common/MultiSelectOrgDropdown";
+import { GetOrganizationAPI } from "../../../api/organizationAPI";
 
 const validationSchema = Yup.object({
   user_id: Yup.string().required("User is required"),
@@ -68,11 +66,11 @@ export default function EditAssignUsersOrganization() {
   });
 
   useEffect(() => {
-    if (mappingData?.data) {
+    if (mappingData) {
       formik.setValues({
-        user_id: mappingData.data.id,
+        user_id: mappingData.id,
         organization_ids:
-          mappingData.data.organizations?.map((org: any) => org.id) || [],
+          mappingData.organizations?.map((org: any) => org.id) || [],
       });
     }
   }, [mappingData]);
@@ -122,7 +120,7 @@ export default function EditAssignUsersOrganization() {
 
         <div>
           <label className="block text-sm font-medium">Organizations</label>
-          <MultiSelectDropdown
+          <MultiSelectOrgDropdown
             options={
               orgsData?.map((org: any) => ({
                 label: `${org.name} (${org.industry})`,

@@ -5,6 +5,7 @@ import { Pencil } from "lucide-react";
 import { createQuoteAPI, updateQuoteAPI } from "../../../api/quoteAPI";
 import { useMutation } from "@tanstack/react-query";
 import UseToast from "../../../hooks/useToast";
+import { useAuthStore } from "../../../store/authStore";
 
 interface Props {
   cardData: CardData;
@@ -19,6 +20,7 @@ const QuoteCard: React.FC<Props> = ({
   setIsEditing,
   reloadCards,
 }) => {
+  const { hasPermission } = useAuthStore();
   const { customer, inquiry, quote } = cardData;
 
   const { mutateAsync: mutateCreateQuote, isPending: isCreating } = useMutation(
@@ -62,15 +64,19 @@ const QuoteCard: React.FC<Props> = ({
 
   return (
     <div className="relative border rounded-md p-2 bg-white shadow-sm">
-      <button
-        onClick={() => setIsEditing(true)}
-        onMouseDown={(e) => e.stopPropagation()}
-        onPointerDown={(e) => e.stopPropagation()}
-        className="absolute top-2 right-2 text-gray-500 hover:text-blue-600 cursor-pointer"
-        aria-label="Edit inquiry"
-      >
-        <Pencil size={16} />
-      </button>
+      {(!quote
+        ? hasPermission("can_create", "quote")
+        : hasPermission("can_edit", "quote")) && (
+        <button
+          onClick={() => setIsEditing(true)}
+          onMouseDown={(e) => e.stopPropagation()}
+          onPointerDown={(e) => e.stopPropagation()}
+          className="absolute top-2 right-2 text-gray-500 hover:text-blue-600 cursor-pointer"
+          aria-label="Edit inquiry"
+        >
+          <Pencil size={16} />
+        </button>
+      )}
       <h3 className="text-sm font-semibold text-gray-700">
         {customer?.c_name}
       </h3>

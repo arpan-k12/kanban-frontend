@@ -216,10 +216,19 @@ const Board: React.FC = () => {
 
     // setCards(updatedCards);
 
+    const newCardPosition = newDestinationCards[overIndex].card_position;
+
+    if (
+      activeCard.column_id === destinationColumnId &&
+      activeCard.card_position === newCardPosition
+    ) {
+      return;
+    }
+
     await mutateMoveCard({
       id: activeCardId,
       destinationColumnId,
-      newCard_position: newDestinationCards[overIndex].card_position,
+      newCard_position: newCardPosition,
     });
   };
 
