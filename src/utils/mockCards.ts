@@ -1,4 +1,3 @@
-// src/data/mockCards.ts
 import type { CardData } from "../types/card.type";
 
 export const mockCards: any[] = [

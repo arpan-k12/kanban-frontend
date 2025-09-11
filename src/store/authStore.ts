@@ -5,7 +5,6 @@ import { logoutUser } from "../api/auth.api";
 interface AuthState {
   user: any | null;
   token: string | null;
-  //   permissions: Permission[];
   permissions: {
     flat: string[];
     byFeature: Record<string, string[]>;
@@ -26,7 +25,11 @@ export const useAuthStore = create<AuthState>()(
         set({
           user,
           token,
-          permissions: user.permissions || { flat: [], byFeature: {} },
+          // permissions: user.permissions || { flat: [], byFeature: {} },
+          permissions:
+            user.role === "0"
+              ? null
+              : user.permissions || { flat: [], byFeature: {} },
         });
       },
 

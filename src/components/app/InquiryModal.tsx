@@ -1,5 +1,5 @@
 import React from "react";
-import { GetAllCustomerAPI } from "../../api/customerAPI";
+import { GetAllCustomerAPI } from "../../api/customer.api";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import type { Customer } from "../../types/customer.type";

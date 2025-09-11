@@ -1,3 +1,4 @@
+import { ChevronDown } from "lucide-react";
 import React, { useState, useRef, useEffect } from "react";
 
 interface MultiSelectOrgDropdownProps {
@@ -24,7 +25,6 @@ const MultiSelectOrgDropdown: React.FC<MultiSelectOrgDropdownProps> = ({
     }
   };
 
-  // Close dropdown if clicked outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -42,7 +42,6 @@ const MultiSelectOrgDropdown: React.FC<MultiSelectOrgDropdownProps> = ({
 
   return (
     <div className="relative w-full" ref={dropdownRef}>
-      {/* Dropdown button */}
       <button
         type="button"
         className="w-full flex justify-between items-center px-3 py-2 border border-gray-300 rounded-md shadow-sm text-sm bg-white"
@@ -56,25 +55,13 @@ const MultiSelectOrgDropdown: React.FC<MultiSelectOrgDropdownProps> = ({
                 .join(", ")
             : placeholder}
         </span>
-        <svg
+        <ChevronDown
           className={`w-4 h-4 transition-transform ${
             isOpen ? "rotate-180" : ""
           }`}
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M19 9l-7 7-7-7"
-          />
-        </svg>
+        />
       </button>
 
-      {/* Dropdown list */}
       {isOpen && (
         <div className="absolute mt-1 w-full max-h-60 overflow-auto rounded-md border border-gray-200 bg-white shadow-lg z-10">
           {options.map((opt) => (

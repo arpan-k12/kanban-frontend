@@ -4,7 +4,7 @@ import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import type { AddOrganizationData } from "../../../types/organization.type";
-import { AddOrganizationAPI } from "../../../api/organizationAPI";
+import { AddOrganizationAPI } from "../../../api/organization.api";
 import UseToast from "../../../hooks/useToast";
 
 const validationSchema = Yup.object({

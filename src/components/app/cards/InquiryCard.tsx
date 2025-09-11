@@ -2,8 +2,8 @@ import React from "react";
 import type { CardData } from "../../../types/card.type";
 import CardEditor from "../common/CardEditor";
 import { Pencil } from "lucide-react";
-import { updateCustomerAPI } from "../../../api/customerAPI";
-import { updateInquiryAPI } from "../../../api/inquiryAPI";
+import { updateCustomerAPI } from "../../../api/customer.api";
+import { updateInquiryAPI } from "../../../api/inquiry.api";
 import { useMutation } from "@tanstack/react-query";
 import UseToast from "../../../hooks/useToast";
 import { useAuthStore } from "../../../store/authStore";
@@ -24,7 +24,6 @@ const InquiryCard: React.FC<Props> = ({
   const { hasPermission } = useAuthStore();
   const { customer, inquiry, customer_id } = cardData;
 
-  // Mutation for customer update
   const { mutateAsync: mutateCustomer } = useMutation({
     mutationFn: ({
       id,
@@ -38,7 +37,6 @@ const InquiryCard: React.FC<Props> = ({
     }) => updateCustomerAPI(id, body),
   });
 
-  // Mutation for inquiry update
   const { mutateAsync: mutateInquiry } = useMutation({
     mutationFn: ({
       id,

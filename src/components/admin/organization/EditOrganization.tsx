@@ -4,7 +4,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import {
   getOrganizationByIdAPI,
   updateOrganizationAPI,
-} from "../../../api/organizationAPI";
+} from "../../../api/organization.api";
 import type { AddOrganizationData } from "../../../types/organization.type";
 import { useNavigate, useParams } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";

@@ -12,8 +12,6 @@ export interface User {
   permissions: Permissions;
 }
 
-// ///
-
 export interface adminUser {
   id: number;
   user_name: string;

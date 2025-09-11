@@ -46,6 +46,7 @@ axios.interceptors.response.use(
   function (error) {
     if (error?.response?.status === 400) {
       useAuthStore.getState().logout();
+      UseToast(error?.message, "error");
       // localStorage.removeItem("token");
       // window.location.href = "/signin";
     }

@@ -2,7 +2,10 @@ import React from "react";
 import type { CardData } from "../../../types/card.type";
 import { Pencil } from "lucide-react";
 import CardEditor from "../common/CardEditor";
-import { createDecisionAPI, updateDecisionAPI } from "../../../api/decisionAPI";
+import {
+  createDecisionAPI,
+  updateDecisionAPI,
+} from "../../../api/decision.api";
 import { useMutation } from "@tanstack/react-query";
 import UseToast from "../../../hooks/useToast";
 import { useAuthStore } from "../../../store/authStore";

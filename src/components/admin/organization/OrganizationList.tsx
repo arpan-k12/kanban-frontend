@@ -9,7 +9,7 @@ import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { Organization } from "../../../types/organization.type";
-import { deleteOrganizationAPI } from "../../../api/organizationAPI";
+import { deleteOrganizationAPI } from "../../../api/organization.api";
 import UseToast from "../../../hooks/useToast";
 import DeleteModel from "../common/DeleteModel";
 

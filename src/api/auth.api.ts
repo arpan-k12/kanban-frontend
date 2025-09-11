@@ -17,12 +17,13 @@ import { request } from "./request";
 
 export const loginUserAPI = async (
   email: string,
-  password: string
+  password: string,
+  recaptcha: any
 ): Promise<any> => {
   const response = await request({
     url: "auth/signin",
     method: "POST",
-    body: { email, password },
+    body: { email, password, recaptcha },
   });
 
   return response;

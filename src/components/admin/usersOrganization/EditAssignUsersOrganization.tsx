@@ -9,7 +9,7 @@ import { GetAllUsersAPI } from "../../../api/users.api";
 import { AssignUserOrganizationAPI } from "../../../api/usersOrganization.api";
 import UseToast from "../../../hooks/useToast";
 import MultiSelectOrgDropdown from "../common/MultiSelectOrgDropdown";
-import { GetOrganizationAPI } from "../../../api/organizationAPI";
+import { GetOrganizationAPI } from "../../../api/organization.api";
 
 const validationSchema = Yup.object({
   user_id: Yup.string().required("User is required"),

@@ -2,7 +2,7 @@ import React from "react";
 import CardEditor from "../common/CardEditor";
 import type { CardData } from "../../../types/card.type";
 import { Pencil } from "lucide-react";
-import { createQuoteAPI, updateQuoteAPI } from "../../../api/quoteAPI";
+import { createQuoteAPI, updateQuoteAPI } from "../../../api/quote.api";
 import { useMutation } from "@tanstack/react-query";
 import UseToast from "../../../hooks/useToast";
 import { useAuthStore } from "../../../store/authStore";
@@ -39,7 +39,6 @@ const QuoteCard: React.FC<Props> = ({
       },
     }
   );
-  // Mutation: update quote
   const { mutateAsync: mutateUpdateQuote, isPending: isUpdating } = useMutation(
     {
       mutationFn: (vars: {

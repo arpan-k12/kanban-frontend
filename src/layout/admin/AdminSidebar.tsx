@@ -16,7 +16,6 @@ const navItems: NavItem[] = [
     name: "Users",
     path: "/users-organization",
   },
-  // { icon: <Box size={18} />, name: "Projects", path: "/projects" },
 ];
 
 const AdminSidebar: React.FC = () => {
@@ -34,21 +33,18 @@ const AdminSidebar: React.FC = () => {
       onMouseEnter={() => !isExpanded && setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      {/* Logo */}
       <div
         className={`py-6 flex ${
           !isExpanded && !isHovered ? "lg:justify-center" : "justify-center"
         }`}
       >
         <Link
-          to="/"
+          to="/dashboard"
           className="text-lg font-semibold text-gray-700 dark:text-gray-200"
         >
           Home
         </Link>
       </div>
-
-      {/* Navigation */}
       <nav className="flex flex-col gap-6 px-4 overflow-y-auto no-scrollbar">
         <h2
           className={`mb-2 text-xs uppercase text-gray-400 flex ${

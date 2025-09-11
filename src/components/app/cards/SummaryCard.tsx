@@ -2,7 +2,7 @@ import React from "react";
 import CardEditor from "../common/CardEditor";
 import type { CardData } from "../../../types/card.type";
 import { Pencil } from "lucide-react";
-import { updateCardSummaryAPI } from "../../../api/cardAPI";
+import { updateCardSummaryAPI } from "../../../api/card.api";
 import { useMutation } from "@tanstack/react-query";
 import UseToast from "../../../hooks/useToast";
 import { useAuthStore } from "../../../store/authStore";

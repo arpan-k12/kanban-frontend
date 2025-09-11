@@ -4,7 +4,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import { GetAllUsersAPI } from "../../../api/users.api";
-import { GetOrganizationAPI } from "../../../api/organizationAPI";
+import { GetOrganizationAPI } from "../../../api/organization.api";
 import { AssignUserOrganizationAPI } from "../../../api/usersOrganization.api";
 import UseToast from "../../../hooks/useToast";
 import MultiSelectOrgDropdown from "../common/MultiSelectOrgDropdown";

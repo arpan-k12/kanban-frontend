@@ -1,5 +1,5 @@
 import { Routes, Route, Navigate } from "react-router-dom";
-import Board from "../pages/app/boardPage";
+import BoardPage from "../pages/app/boardPage";
 import type { ReactElement } from "react";
 import NotFound from "../pages/admin/OtherPage/NotFound";
 import { useAuthStore } from "../store/authStore";
@@ -16,7 +16,7 @@ export default function AppRoutes() {
         path="/board"
         element={
           <ProtectedRoute>
-            <Board />
+            <BoardPage />
           </ProtectedRoute>
         }
       />

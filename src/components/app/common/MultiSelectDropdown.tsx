@@ -14,7 +14,6 @@ const MultiSelectDropdown: React.FC<MultiSelectDropdownProps> = ({
   keepOpen,
 }) => {
   const handleSelect = (value: string) => {
-    // e.stopPropagation();
     if (selected.includes(value)) {
       onChange(selected.filter((v) => v !== value));
     } else {
