@@ -7,7 +7,7 @@ import { loginUserAPI } from "../../../api/auth.api";
 import { useAuthStore } from "../../../store/authStore";
 import ReCAPTCHA from "react-google-recaptcha";
 import { useRef, useState } from "react";
-import { verifyOtpAPI } from "../../../api/users.api";
+import { verifySigninOtpAPI } from "../../../api/auth.api";
 
 const RECAPTCHA_SITE_KEY = import.meta.env.VITE_RECAPTCHA_SITE_KEY;
 const validationSchema = Yup.object({
@@ -27,27 +27,6 @@ export default function SignIn() {
   const [step, setStep] = useState<"login" | "otp">("login");
   const [userId, setUserId] = useState<string>("");
 
-  // const { mutateAsync: mutateLogin, isPending } = useMutation({
-  //   mutationFn: (payload: {
-  //     email: string;
-  //     password: string;
-  //     recaptcha: string;
-  //   }) => loginUserAPI(payload.email, payload.password, payload.recaptcha),
-  //   onSuccess: (data: any) => {
-  //     login(data.data, data.token);
-  //     if (data?.data?.role == "0") {
-  //       navigate("/dashboard");
-  //     } else if (data?.data?.role == "1") {
-  //       navigate("/board");
-  //     }
-  //   },
-  //   onError: (error: any) => {
-  //     console.error(error);
-  //     UseToast(error?.message || "Failed to Login, Please Try Again", "error");
-  //     recaptchaRef.current?.reset();
-  //   },
-  // });
-
   const { mutateAsync: mutateLogin } = useMutation({
     mutationFn: (payload: {
       email: string;
@@ -55,9 +34,9 @@ export default function SignIn() {
       recaptcha: string;
     }) => loginUserAPI(payload.email, payload.password, payload.recaptcha),
     onSuccess: (data: any) => {
-      if (data.requiresOtp) {
+      if (data?.data?.requiresOtp) {
         setStep("otp");
-        setUserId(data.userId);
+        setUserId(data?.data?.userId);
       }
     },
     onError: (error: any) => {
@@ -68,7 +47,7 @@ export default function SignIn() {
 
   const { mutateAsync: mutateOtp } = useMutation({
     mutationFn: (payload: { userId: string; otp: string }) =>
-      verifyOtpAPI(payload.userId, payload.otp),
+      verifySigninOtpAPI(payload.userId, payload.otp),
     onSuccess: (data: any) => {
       login(data.data, data.token);
       navigate(data.data.role == "0" ? "/dashboard" : "/board");
@@ -93,18 +72,6 @@ export default function SignIn() {
               }}
               validationSchema={validationSchema}
               onSubmit={(values) => mutateLogin(values)}
-              // onSubmit={async (values, { setSubmitting, setFieldError }) => {
-              //   try {
-              //     await mutateLogin(values);
-              //   } catch (err: any) {
-              //     setFieldError(
-              //       "general",
-              //       err?.response?.data?.message || "Login failed"
-              //     );
-              //   } finally {
-              //     setSubmitting(false);
-              //   }
-              // }}
             >
               {({ isSubmitting, setFieldValue, values }) => (
                 <Form>
@@ -184,7 +151,11 @@ export default function SignIn() {
               onSubmit={(values) => mutateOtp({ userId, otp: values.otp })}
             >
               <Form>
-                <Field name="otp" placeholder="Enter OTP" />
+                <Field
+                  name="otp"
+                  placeholder="Enter OTP"
+                  className="w-full p-2 border rounded"
+                />
                 <ErrorMessage
                   name="otp"
                   component="p"

@@ -25,12 +25,3 @@ export const updateUserPermissionsAPI = async (id: string, body: any) => {
   });
   return response;
 };
-
-export const verifyOtpAPI = async (id: string, body: any) => {
-  const response: AxiosResponse<any> = await request({
-    url: `users/veryfyotp`,
-    method: "PATCH",
-    body,
-  });
-  return response;
-};

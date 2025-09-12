@@ -1,3 +1,4 @@
+import type { AxiosResponse } from "../types/Axios";
 import { request } from "./request";
 
 // export interface AuthResponse {
@@ -33,14 +34,33 @@ export const signupUserAPI = async (
   user_name: string,
   email: string,
   password: string,
-  confirmPassword: string
+  confirmPassword: string,
+  recaptcha: string
 ): Promise<any> => {
   const response = await request({
     url: "auth/signup",
     method: "POST",
-    body: { user_name, email, password, confirmPassword },
+    body: { user_name, email, password, confirmPassword, recaptcha },
   });
 
+  return response;
+};
+
+export const verifySigninOtpAPI = async (userId: string, otp: string) => {
+  const response: AxiosResponse<any> = await request({
+    url: `auth/verify-signin-otp`,
+    method: "POST",
+    body: { userId, otp },
+  });
+  return response;
+};
+
+export const verifySignupOtpAPI = async (email: string, otp: string) => {
+  const response: AxiosResponse<any> = await request({
+    url: `auth/verify-signup-otp`,
+    method: "POST",
+    body: { email, otp },
+  });
   return response;
 };
 
