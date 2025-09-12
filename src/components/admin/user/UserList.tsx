@@ -1,12 +1,8 @@
-import {
-  flexRender,
-  getCoreRowModel,
-  useReactTable,
-  type ColumnDef,
-} from "@tanstack/react-table";
+import { type ColumnDef } from "@tanstack/react-table";
 import type { User } from "../../../types/user.type";
 import { Edit } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import CommonTable from "../common/CommonTable";
 
 interface UserListProps {
   data: User[];
@@ -83,52 +79,9 @@ export default function UserList({ data }: UserListProps) {
     },
   ];
 
-  const table = useReactTable({
-    data,
-    columns,
-    getCoreRowModel: getCoreRowModel(),
-  });
-
   return (
-    <div className="overflow-x-auto rounded-lg shadow-lg border border-gray-200">
-      <table className="min-w-full border-collapse text-sm">
-        <thead className="bg-gradient-to-r from-gray-100 to-gray-200">
-          {table.getHeaderGroups().map((headerGroup) => (
-            <tr key={headerGroup.id}>
-              {headerGroup.headers.map((header) => (
-                <th
-                  key={header.id}
-                  className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider border-b"
-                >
-                  {flexRender(
-                    header.column.columnDef.header,
-                    header.getContext()
-                  )}
-                </th>
-              ))}
-            </tr>
-          ))}
-        </thead>
-        <tbody className="divide-y divide-gray-200">
-          {table.getRowModel().rows.map((row, rowIndex) => (
-            <tr
-              key={row.id}
-              className={`${
-                rowIndex % 2 === 0 ? "bg-white" : "bg-gray-50"
-              } hover:bg-indigo-50 transition-colors duration-200`}
-            >
-              {row.getVisibleCells().map((cell) => (
-                <td
-                  key={cell.id}
-                  className="px-6 py-3 text-gray-700 text-sm border-t align-top"
-                >
-                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                </td>
-              ))}
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+    <>
+      <CommonTable data={data} columns={columns} />
+    </>
   );
 }

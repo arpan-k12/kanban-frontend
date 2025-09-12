@@ -74,7 +74,7 @@ export default function Signup() {
       navigate(data.data.role == "0" ? "/dashboard" : "/board");
     },
     onError: (error: any) => {
-      UseToast(error?.message || "Invalid OTP", "error");
+      UseToast(error?.message, "error");
     },
   });
 

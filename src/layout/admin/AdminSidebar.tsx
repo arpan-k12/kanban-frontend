@@ -1,5 +1,11 @@
 import { Link, useLocation } from "react-router-dom";
-import { Building, Grid, MoreHorizontal, UserCircle } from "lucide-react";
+import {
+  Building,
+  Grid,
+  Image,
+  MoreHorizontal,
+  UserCircle,
+} from "lucide-react";
 import { useSidebar } from "../../context/admin/SidebarContext";
 
 type NavItem = {
@@ -10,6 +16,7 @@ type NavItem = {
 
 const navItems: NavItem[] = [
   { icon: <Grid size={18} />, name: "Dashboard", path: "/dashboard" },
+  { icon: <Image size={18} />, name: "Product", path: "/product" },
   { icon: <Building size={18} />, name: "Organization", path: "/organization" },
   {
     icon: <UserCircle size={18} />,
