@@ -15,6 +15,8 @@ import DashboardLayout from "../layout/admin/DashboardLayout";
 import EditDashboard from "../components/admin/user/EditDashboard";
 import ProductLayout from "../layout/admin/ProductLayout";
 import Product from "../pages/admin/Product/Product";
+import AddProduct from "../components/admin/product/AddProduct";
+import EditProduct from "../components/admin/product/EditProduct";
 
 export default function AdminRoutes() {
   return (
@@ -32,11 +34,8 @@ export default function AdminRoutes() {
 
           <Route path="product" element={<ProductLayout />}>
             <Route index element={<Product />} />
-            {/* <Route path="add-Organization" element={<AddOrganization />} /> */}
-            {/* <Route
-              path="edit-organization/:id"
-              element={<EditOrganization />}
-            /> */}
+            <Route path="add-product" element={<AddProduct />} />
+            <Route path="edit-product/:id" element={<EditProduct />} />
           </Route>
 
           <Route path="organization" element={<OrganizationLayout />}>

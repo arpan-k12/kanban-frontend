@@ -19,7 +19,9 @@ axios.interceptors.request.use(
       config.headers["Authorization"] = `Bearer ${authToken}`;
     }
 
-    config.headers["Content-Type"] = "application/json";
+    if (!(config.data instanceof FormData)) {
+      config.headers["Content-Type"] = "application/json";
+    }
 
     return config;
   },

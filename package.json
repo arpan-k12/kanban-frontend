@@ -19,6 +19,7 @@
     "axios": "^1.11.0",
     "date-fns": "^4.1.0",
     "formik": "^2.4.6",
+    "keen-slider": "^6.8.6",
     "lucide-react": "^0.541.0",
     "react": "^19.1.1",
     "react-datepicker": "^8.7.0",
