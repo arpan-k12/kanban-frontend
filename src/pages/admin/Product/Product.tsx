@@ -8,12 +8,12 @@ import ProductList from "../../../components/admin/product/ProductList";
 
 export default function Product() {
   const {
-    data: organization = [],
+    data: product = [],
     isLoading,
     isError,
   } = useQuery<Product[]>({
     queryKey: ["GetProductAPI"],
-    queryFn: GetProductAPI,
+    queryFn: () => GetProductAPI(),
   });
 
   if (isLoading) {
@@ -38,7 +38,7 @@ export default function Product() {
         </Link>
       </div>
 
-      <ProductList data={organization} />
+      <ProductList data={product} />
     </div>
   );
 }

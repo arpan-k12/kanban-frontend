@@ -47,7 +47,21 @@ export default function ProductList({ data }: ProductListProps) {
         return row.original?.categories?.name;
       },
     },
-    { accessorKey: "description", header: "Description" },
+    // {
+    //   id: "Other",
+    //   header: "Other",
+    //   cell: ({ row }) => {
+    //     return <span>...</span>;
+    //   },
+    // },
+    {
+      accessorKey: "description",
+      header: "Description",
+      cell: ({ row }) => {
+        const desc = row.original.description || "";
+        return desc.length > 10 ? desc.slice(0, 30) + "..." : desc;
+      },
+    },
     { accessorKey: "price", header: "Price" },
     {
       accessorKey: "image",

@@ -1,15 +1,16 @@
 import type { AxiosResponse } from "../types/Axios.ts";
 import { request } from "./request.ts";
 
-export const GetProductAPI = async () => {
+export const GetProductAPI = async (search?: string) => {
   const response: AxiosResponse<any> = await request({
     url: `product`,
     method: "GET",
+    params: search ? { search } : {},
   });
   return response?.data ?? [];
 };
 
-export const AddProductAPI = async (formData: FormData) => {
+export const AddProductAPI = async (formData?: FormData) => {
   const response: AxiosResponse<any> = await request({
     url: `product`,
     method: "POST",
