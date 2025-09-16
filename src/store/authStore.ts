@@ -12,6 +12,7 @@ interface AuthState {
   login: (user: any, token: string) => void;
   logout: () => void;
   hasPermission: (perm: string, feature?: string) => boolean;
+  setPermissions: (permissions: AuthState["permissions"]) => void;
 }
 
 export const useAuthStore = create<AuthState>()(
@@ -53,6 +54,7 @@ export const useAuthStore = create<AuthState>()(
 
         return permissions.flat.includes(perm);
       },
+      setPermissions: (permissions) => set({ permissions }),
     }),
     {
       name: "auth-storage",

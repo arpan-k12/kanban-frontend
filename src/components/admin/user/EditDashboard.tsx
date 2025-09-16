@@ -8,6 +8,7 @@ import {
   getUserPermissionsAPI,
   updateUserPermissionsAPI,
 } from "../../../api/users.api";
+import { useRef } from "react";
 
 interface Permission {
   id: string;
@@ -42,6 +43,7 @@ const validationSchema = Yup.object({
 export default function EditDashboard() {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
+  const defaultFeaturesRef = useRef<Feature[]>([]);
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ["getUserPermissionsAPI", id],
@@ -83,11 +85,34 @@ export default function EditDashboard() {
     },
   });
 
+  if (data?.features && defaultFeaturesRef.current.length === 0) {
+    defaultFeaturesRef.current = JSON.parse(JSON.stringify(data.features));
+  }
+
   if (isLoading) return <div className="p-6">Loading user permissions...</div>;
   if (isError)
     return (
       <div className="p-6 text-red-600">Failed to load user permissions.</div>
     );
+
+  const allChecked = formik.values.features.every((feature) =>
+    feature.permissions.every((perm) => perm.assigned)
+  );
+
+  const toggleAllPermissions = (checked: boolean) => {
+    if (checked) {
+      const updatedFeatures = formik.values.features.map((feature) => ({
+        ...feature,
+        permissions: feature.permissions.map((perm) => ({
+          ...perm,
+          assigned: true,
+        })),
+      }));
+      formik.setFieldValue("features", updatedFeatures);
+    } else {
+      formik.setFieldValue("features", defaultFeaturesRef.current);
+    }
+  };
 
   const togglePermission = (featureIndex: number, permIndex: number) => {
     const updatedFeatures = [...formik.values.features];
@@ -114,6 +139,17 @@ export default function EditDashboard() {
             Back
           </button>
         </div>
+      </div>
+
+      <div className="mb-4">
+        <label className="flex items-center gap-2 cursor-pointer">
+          <input
+            type="checkbox"
+            checked={allChecked}
+            onChange={(e) => toggleAllPermissions(e.target.checked)}
+          />
+          <span className="font-medium">Select All Permissions</span>
+        </label>
       </div>
 
       <form onSubmit={formik.handleSubmit} className="space-y-5">

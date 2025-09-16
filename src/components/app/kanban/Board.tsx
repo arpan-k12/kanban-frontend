@@ -241,18 +241,22 @@ const Board: React.FC = () => {
 
   const handleAddCard = async (data: {
     customerId: string;
-    commodity: string;
+    productId: string;
+    quantity: number;
+    price: number;
     budget: number;
   }) => {
     if (!selectedOrg) {
       UseToast("you don't have permission to create card", "error");
     } else {
-      await mutateCreateInquiryCard({
-        organization_id: selectedOrg,
-        customer_id: data.customerId,
-        commodity: data.commodity,
-        budget: data.budget,
-      });
+      console.log(data, "hhhhh");
+
+      // await mutateCreateInquiryCard({
+      //   organization_id: selectedOrg,
+      //   customer_id: data.customerId,
+      //   commodity: data.commodity,
+      //   budget: data.budget,
+      // });
     }
   };
 

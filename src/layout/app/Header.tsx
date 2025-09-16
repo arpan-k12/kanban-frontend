@@ -1,20 +1,35 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { getUsersOrganizationByIdAPI } from "../../api/usersOrganization.api";
 import { useOrganization } from "../../context/app/OrganizationContext";
 import { useQuery } from "@tanstack/react-query";
 import type { UserOrganizationType } from "../../types/userOrganization";
 import { useAuthStore } from "../../store/authStore";
 import { useNavigate } from "react-router-dom";
+import { checkUserPermissionsAPI } from "../../api/users.api";
 
 const Header: React.FC = () => {
   // const [organizations, setOrganizations] = useState<Organization[]>([]);
   const navigate = useNavigate();
-  const { user, logout } = useAuthStore();
+  const { user, logout, setPermissions } = useAuthStore();
 
   // const { user, logout } = useAuthStore((state) => ({
   //   user: state.user,
   //   logout: state.logout,
   // }));
+
+  const permissionsFetched = useRef(false);
+  const { data: permissionsData } = useQuery({
+    queryKey: ["checkUserPermissionsAPI"],
+    queryFn: checkUserPermissionsAPI,
+    enabled: !!user?.id && !permissionsFetched.current,
+  });
+
+  useEffect(() => {
+    if (permissionsData && !permissionsFetched.current) {
+      setPermissions(permissionsData?.permissions);
+      permissionsFetched.current = true;
+    }
+  }, [permissionsData, setPermissions]);
 
   const handleLogout = () => {
     logout();

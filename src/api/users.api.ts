@@ -25,3 +25,12 @@ export const updateUserPermissionsAPI = async (id: string, body: any) => {
   });
   return response;
 };
+
+// For App route
+export const checkUserPermissionsAPI = async () => {
+  const response: AxiosResponse<any> = await request({
+    url: `users/user-permission`,
+    method: "GET",
+  });
+  return response?.data ?? [];
+};
