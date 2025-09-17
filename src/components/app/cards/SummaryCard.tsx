@@ -38,7 +38,7 @@ const SummaryCard: React.FC<Props> = ({
   });
 
   return (
-    <div className="relative border rounded-md p-2 bg-white shadow-sm">
+    <div className="relative rounded-xl border border-gray-200 bg-white p-4  transition-shadow duration-200">
       {(!cardData?.summary
         ? hasPermission("can_create", "discussion")
         : hasPermission("can_edit", "discussion")) && (
@@ -52,22 +52,47 @@ const SummaryCard: React.FC<Props> = ({
           <Pencil size={16} />
         </button>
       )}
-      <h3 className="text-sm font-semibold text-gray-700">
-        {customer?.c_name}
-      </h3>
-      <p className="text-xs text-gray-500">{customer?.c_email}</p>
-      {inquiry?.commodity && (
-        <p className="text-xs text-gray-600">
-          <span className="font-medium">Commodity:</span> {inquiry?.commodity}
+      <div className="mb-2">
+        <h3 className="text-sm font-semibold text-gray-800">
+          {customer?.c_name}
+        </h3>
+        <p className="text-xs text-gray-500">{customer?.c_email}</p>
+      </div>
+
+      {inquiry?.product?.name && (
+        <p className="text-xs text-gray-700">
+          <span className="font-medium">Product: </span>
+          {inquiry?.product?.name}
         </p>
       )}
-      {inquiry?.budget && (
-        <p className="text-xs text-gray-600">
-          <span className="font-medium">Budget:</span> {inquiry?.budget}
-        </p>
-      )}
+
+      <div className="mt-2 grid grid-cols-2 gap-x-3 gap-y-1 text-xs text-gray-600">
+        {inquiry?.quantity && (
+          <p>
+            <span className="font-medium">Qty: </span>
+            {inquiry?.quantity}
+          </p>
+        )}
+        {inquiry?.price && (
+          <p>
+            <span className="font-medium">Price: </span>₹{inquiry?.price}
+          </p>
+        )}
+        {inquiry?.budget && (
+          <p>
+            <span className="font-medium">Budget: </span>₹{inquiry?.budget}
+          </p>
+        )}
+        {inquiry?.identification_code && (
+          <p>
+            <span className="font-medium">Code: </span>
+            {inquiry?.identification_code}
+          </p>
+        )}
+      </div>
+
       {cardData?.summary && (
-        <p className="mt-1 text-xs text-gray-600">
+        <p className="mt-2 text-xs text-gray-600">
           <span className="font-medium">Summary:</span> {cardData?.summary}
         </p>
       )}

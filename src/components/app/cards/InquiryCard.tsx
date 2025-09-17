@@ -48,13 +48,13 @@ const InquiryCard: React.FC<Props> = ({
   });
 
   return (
-    <div className="relative bg-white p-4  transition-shadow duration-200">
+    <div className="relative rounded-xl border border-gray-200 bg-white p-4  transition-shadow duration-200">
       {hasPermission("can_edit", "inquiry") && (
         <button
           onClick={() => setIsEditing(true)}
           onMouseDown={(e) => e.stopPropagation()}
           onPointerDown={(e) => e.stopPropagation()}
-          className="absolute top-3 right-3 text-gray-400 hover:text-blue-600"
+          className="absolute top-3 right-3 text-gray-400 hover:text-blue-600 cursor-pointer"
           aria-label="Edit inquiry"
         >
           <Pencil size={16} />

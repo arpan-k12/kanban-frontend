@@ -28,7 +28,7 @@ export default function ProductDetailPage() {
   return (
     <div>
       <div className="p-8 max-w-6xl mx-auto">
-        <div className="md:w-fit">
+        <div className="md:w-fit mb-4">
           <button
             className="font-medium inline-flex items-center justify-center cursor-pointer hover:text-blue-600"
             onClick={() => navigate(-1)}

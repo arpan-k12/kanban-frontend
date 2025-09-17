@@ -243,27 +243,25 @@ const Board: React.FC = () => {
     });
 
   const handleAddCard = async (data: {
-    customerId: string;
-    productId: string;
-    quantity: number;
-    price: number;
-    budget: number;
-    identification_code: string;
+    // customerId: string;
+    // items: ItemInput[];
+    // budget: number;
+    // identification_code: string;
   }) => {
     if (!selectedOrg) {
       UseToast("you don't have permission to create card", "error");
     } else {
       console.log(data, "hhhhh");
 
-      await mutateCreateInquiryCard({
-        organization_id: selectedOrg,
-        customer_id: data.customerId,
-        product_id: data.productId,
-        quantity: data.quantity,
-        price: data.price,
-        budget: data.budget,
-        identification_code: data.identification_code,
-      });
+      // await mutateCreateInquiryCard({
+      //   organization_id: selectedOrg,
+      //   customer_id: data.customerId,
+      //   product_id: data.productId,
+      //   quantity: data.quantity,
+      //   price: data.price,
+      //   budget: data.budget,
+      //   identification_code: data.identification_code,
+      // });
     }
   };
 
@@ -288,7 +286,7 @@ const Board: React.FC = () => {
             {hasPermission("can_create", "card") && (
               <button
                 onClick={() => setIsModalOpen(true)}
-                className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+                className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700"
               >
                 + Add Card
               </button>

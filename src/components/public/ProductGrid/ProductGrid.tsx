@@ -20,11 +20,11 @@ export default function ProductGrid({ data }: ProductGridProps) {
               key={product.id}
               className="bg-white border border-gray-100 rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden flex flex-col"
             >
-              <div className="relative h-52 w-full overflow-hidden">
+              <div className="relative h-52 w-full overflow-hidden flex justify-center">
                 <img
                   src={`${BASE_URL}${product.image[0]}`}
                   alt={product.name}
-                  className="w-full h-full object-cover hover:scale-110 transition-transform duration-500"
+                  className="w-auto h-auto object-cover hover:scale-110 transition-transform duration-500"
                 />
                 <span className="absolute top-3 left-3 bg-blue-400 text-white text-xs px-3 py-1 rounded-full shadow-md">
                   {product.categories?.name}

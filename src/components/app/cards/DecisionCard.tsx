@@ -41,7 +41,7 @@ const DecisionCard: React.FC<Props> = ({
   });
 
   return (
-    <div className="relative border rounded-md p-2 bg-white shadow-sm">
+    <div className="relative rounded-xl border border-gray-200 bg-white p-4  transition-shadow duration-200">
       {!decision && hasPermission("can_create", "decision") && (
         <button
           onClick={() => setIsEditing(true)}
@@ -53,48 +53,64 @@ const DecisionCard: React.FC<Props> = ({
           <Pencil size={16} />
         </button>
       )}
-      <h3 className="text-sm font-semibold text-gray-700">
-        {customer?.c_name}
-      </h3>
-      <p className="text-xs text-gray-500">{customer?.c_email}</p>
-      {inquiry?.commodity && (
-        <p className="text-xs text-gray-600">
-          <span className="font-medium">Commodity:</span> {inquiry?.commodity}
+      <div className="mb-2">
+        <h3 className="text-sm font-semibold text-gray-800">
+          {customer?.c_name}
+        </h3>
+        <p className="text-xs text-gray-500">{customer?.c_email}</p>
+      </div>
+
+      {inquiry?.product?.name && (
+        <p className="text-xs text-gray-700">
+          <span className="font-medium">Product: </span>
+          {inquiry?.product?.name}
         </p>
       )}
-      {inquiry?.budget && (
-        <p className="text-xs text-gray-600">
-          <span className="font-medium">Budget:</span> {inquiry?.budget}
-        </p>
-      )}
+
+      <div className="mt-2 grid grid-cols-2 gap-x-3 gap-y-1 text-xs text-gray-600">
+        {inquiry?.quantity && (
+          <p>
+            <span className="font-medium">Qty: </span>
+            {inquiry?.quantity}
+          </p>
+        )}
+        {inquiry?.price && (
+          <p>
+            <span className="font-medium">Price: </span>₹{inquiry?.price}
+          </p>
+        )}
+        {inquiry?.budget && (
+          <p>
+            <span className="font-medium">Budget: </span>₹{inquiry?.budget}
+          </p>
+        )}
+      </div>
       {cardData?.summary && (
-        <p className="mt-1 text-xs text-gray-600">
+        <p className="mt-2 text-xs text-gray-600">
           <span className="font-medium">Summary:</span> {cardData?.summary}
         </p>
       )}
       {quote && (
-        <div className="mt-2 text-xs text-gray-800">
+        <div className="mt-2 text-xs text-gray-800 space-y-1">
           <div className="font-medium">💰 {quote.amount}</div>
           <span>⏳ {new Date(quote.valid_until).toLocaleDateString()}</span>
         </div>
       )}
       {decision && (
-        <div>
-          <p className="mt-1 text-xs text-gray-600">
-            <span className="font-medium">Decision:</span>
-          </p>
-
+        <div className="mt-3">
+          <p className="text-xs text-gray-600 font-medium">Decision:</p>
           {decision.decision === "pass" ? (
-            <span className="px-2 py-1 bg-green-100 text-green-700 rounded text-xs">
+            <span className="inline-block mt-1 px-2 py-1 bg-green-100 text-green-700 rounded text-xs">
               ✅ Passed
             </span>
           ) : (
-            <span className="px-2 py-1 bg-red-100 text-red-700 rounded text-xs">
+            <span className="inline-block mt-1 px-2 py-1 bg-red-100 text-red-700 rounded text-xs">
               ❌ Failed
             </span>
           )}
+
           {decision.reason && (
-            <p className="mt-1 text-xs text-gray-600 italic">
+            <p className="mt-2 text-xs text-gray-600 italic">
               <span className="font-medium">Reason:</span> {decision.reason}
             </p>
           )}
