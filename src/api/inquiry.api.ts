@@ -6,8 +6,11 @@ import { request } from "./request";
 export const createInquiryCardAPI = async (data: {
   organization_id: string;
   customer_id: string;
-  commodity: string;
+  product_id: string;
+  quantity: number;
+  price: number;
   budget: number;
+  identification_code: string;
 }): Promise<Inquiry[]> => {
   const response: AxiosResponse<Inquiry[]> = await request({
     url: "inquiry",
@@ -33,4 +36,12 @@ export const updateInquiryAPI = async (
   });
 
   return response?.data ?? ({} as Inquiry);
+};
+
+export const GetUniqueIdentificationCodeAPI = async () => {
+  const response: AxiosResponse<any> = await request({
+    url: `inquiry/code/generate`,
+    method: "GET",
+  });
+  return response?.data ?? [];
 };

@@ -48,79 +48,97 @@ const InquiryCard: React.FC<Props> = ({
   });
 
   return (
-    <div className="relative border rounded-md p-2 bg-white shadow-sm">
+    <div className="relative bg-white p-4  transition-shadow duration-200">
       {hasPermission("can_edit", "inquiry") && (
         <button
           onClick={() => setIsEditing(true)}
           onMouseDown={(e) => e.stopPropagation()}
           onPointerDown={(e) => e.stopPropagation()}
-          className="absolute top-2 right-2 text-gray-500 hover:text-blue-600 cursor-pointer"
+          className="absolute top-3 right-3 text-gray-400 hover:text-blue-600"
           aria-label="Edit inquiry"
         >
           <Pencil size={16} />
         </button>
       )}
-      <h3 className="text-sm font-semibold text-gray-700">
-        {customer?.c_name}
-      </h3>
-      <p className="text-xs text-gray-500">{customer?.c_email}</p>
-      {inquiry?.commodity && (
-        <p className="text-xs text-gray-600">
-          <span className="font-medium">Commodity:</span> {inquiry?.commodity}
+
+      <div className="mb-2">
+        <h3 className="text-sm font-semibold text-gray-800">
+          {customer?.c_name}
+        </h3>
+        <p className="text-xs text-gray-500">{customer?.c_email}</p>
+      </div>
+
+      {inquiry?.product?.name && (
+        <p className="text-xs text-gray-700">
+          <span className="font-medium">Product: </span>
+          {inquiry?.product?.name}
         </p>
       )}
-      {inquiry?.budget && (
-        <p className="text-xs text-gray-600">
-          <span className="font-medium">Budget:</span> {inquiry?.budget}
-        </p>
-      )}
+
+      <div className="mt-2 grid grid-cols-2 gap-x-3 gap-y-1 text-xs text-gray-600">
+        {inquiry?.quantity && (
+          <p>
+            <span className="font-medium">Qty: </span>
+            {inquiry?.quantity}
+          </p>
+        )}
+        {inquiry?.price && (
+          <p>
+            <span className="font-medium">Price: </span>₹{inquiry?.price}
+          </p>
+        )}
+        {inquiry?.budget && (
+          <p>
+            <span className="font-medium">Budget: </span>₹{inquiry?.budget}
+          </p>
+        )}
+        {inquiry?.identification_code && (
+          <p>
+            <span className="font-medium">Code: </span>
+            {inquiry?.identification_code}
+          </p>
+        )}
+      </div>
+
       {isEditing && (
-        <CardEditor
-          initialData={{
-            c_name: customer?.c_name || "",
-            c_email: customer?.c_email || "",
-            commodity: inquiry?.commodity || "",
-            budget: inquiry?.budget?.toString() || "",
-          }}
-          onSave={async (updated: any) => {
-            // await updateCustomer(customer_id, updated.c_name, updated.c_email);
-            // await updateInquiry(inquiry?.id, {
-            //   customer_id,
-            //   commodity: updated?.commodity,
-            //   budget: updated?.budget,
-            // });
-            // await reloadCards();
-
-            try {
-              await mutateCustomer({
-                id: customer_id,
-                body: {
-                  c_name: updated.c_name,
-                  c_email: updated.c_email,
-                },
-              });
-
-              if (inquiry?.id) {
-                await mutateInquiry({
-                  id: inquiry.id,
+        <div className="mt-3">
+          <CardEditor
+            initialData={{
+              c_name: customer?.c_name || "",
+              c_email: customer?.c_email || "",
+              budget: inquiry?.budget?.toString() || "",
+            }}
+            onSave={async (updated: any) => {
+              try {
+                await mutateCustomer({
+                  id: customer_id,
                   body: {
-                    customer_id,
-                    commodity: updated.commodity,
-                    budget: Number(updated.budget),
+                    c_name: updated.c_name,
+                    c_email: updated.c_email,
                   },
                 });
+
+                if (inquiry?.id) {
+                  await mutateInquiry({
+                    id: inquiry.id,
+                    body: {
+                      customer_id,
+                      commodity: updated.commodity,
+                      budget: Number(updated.budget),
+                    },
+                  });
+                }
+
+                await reloadCards();
+                UseToast("Inquiry updated successfully!", "success");
+                setIsEditing(false);
+              } catch (error: any) {
+                UseToast(error, "error");
               }
-
-              await reloadCards();
-              UseToast("Inquiry updated successfully!", "success");
-
-              setIsEditing(false);
-            } catch (error: any) {
-              UseToast(error, "error");
-            }
-          }}
-          onCancel={() => setIsEditing(false)}
-        />
+            }}
+            onCancel={() => setIsEditing(false)}
+          />
+        </div>
       )}
     </div>
   );

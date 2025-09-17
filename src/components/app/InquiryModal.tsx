@@ -6,6 +6,8 @@ import type { Customer } from "../../types/customer.type";
 import { useQuery } from "@tanstack/react-query";
 import type { Product } from "../../types/product.type";
 import { GetProductAPI } from "../../api/product.api";
+import { GetUniqueIdentificationCodeAPI } from "../../api/inquiry.api";
+import { RefreshCcw } from "lucide-react";
 
 interface InquiryModalProps {
   isOpen: boolean;
@@ -16,6 +18,7 @@ interface InquiryModalProps {
     quantity: number;
     price: number;
     budget: number;
+    identification_code: string;
   }) => void;
 }
 
@@ -24,6 +27,16 @@ const InquiryModal: React.FC<InquiryModalProps> = ({
   onClose,
   onAdd,
 }) => {
+  const {
+    data: uniqueCode,
+    isLoading: isLoadingCode,
+    refetch: refetchCode,
+  } = useQuery({
+    queryKey: ["GetUniqueIdentificationCodeAPI"],
+    queryFn: GetUniqueIdentificationCodeAPI,
+    enabled: isOpen,
+  });
+
   const {
     data: customers = [],
     isLoading,
@@ -59,6 +72,9 @@ const InquiryModal: React.FC<InquiryModalProps> = ({
       .typeError("Budget must be a number")
       .positive("Budget must be greater than 0")
       .required("Budget is required"),
+    identification_code: Yup.string().required(
+      "Identification code is required"
+    ),
   });
 
   return (
@@ -75,7 +91,9 @@ const InquiryModal: React.FC<InquiryModalProps> = ({
             quantity: 1,
             price: 0,
             budget: "",
+            identification_code: uniqueCode || "",
           }}
+          enableReinitialize
           validationSchema={validationSchema}
           onSubmit={(values, { resetForm }) => {
             onAdd({
@@ -84,6 +102,7 @@ const InquiryModal: React.FC<InquiryModalProps> = ({
               quantity: values.quantity,
               price: values.price,
               budget: Number(values.budget),
+              identification_code: values.identification_code,
             });
             resetForm();
             onClose();
@@ -193,6 +212,49 @@ const InquiryModal: React.FC<InquiryModalProps> = ({
                     className="text-red-500 text-sm mt-1"
                   />
                 </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Identification Code
+                  </label>
+                  <div className="flex items-center gap-2">
+                    <Field
+                      type="text"
+                      name="identification_code"
+                      disabled
+                      className="flex-1 border rounded-lg p-2 bg-gray-100 text-gray-600"
+                    />
+                    <button
+                      type="button"
+                      disabled={!!uniqueCode}
+                      onClick={() => refetchCode()}
+                      className={`p-2 rounded-full ${
+                        uniqueCode
+                          ? "bg-gray-300 cursor-not-allowed text-gray-500"
+                          : "bg-gray-200 hover:bg-gray-300 text-gray-700"
+                      }`}
+                      title={
+                        uniqueCode
+                          ? "Code already generated"
+                          : "Generate new code"
+                      }
+                    >
+                      <RefreshCcw
+                        size={18}
+                        className={isLoadingCode ? "animate-spin" : ""}
+                      />
+                    </button>
+                  </div>
+                  <ErrorMessage
+                    name="identification_code"
+                    component="p"
+                    className="text-red-500 text-sm mt-1"
+                  />
+                  {isLoadingCode && (
+                    <p className="text-xs text-gray-400 mt-1">
+                      Generating code...
+                    </p>
+                  )}
+                </div>
 
                 <div className="flex justify-end gap-3 pt-3">
                   <button
@@ -204,7 +266,7 @@ const InquiryModal: React.FC<InquiryModalProps> = ({
                   </button>
                   <button
                     type="submit"
-                    disabled={isSubmitting}
+                    disabled={isSubmitting || isLoadingCode}
                     className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
                   >
                     {isSubmitting ? "Adding..." : "Add"}

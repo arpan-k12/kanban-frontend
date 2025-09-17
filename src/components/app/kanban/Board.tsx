@@ -119,8 +119,11 @@ const Board: React.FC = () => {
       mutationFn: (data: {
         organization_id: string;
         customer_id: string;
-        commodity: string;
+        product_id: string;
+        quantity: number;
+        price: number;
         budget: number;
+        identification_code: string;
       }) => createInquiryCardAPI(data),
       onSuccess: async () => {
         UseToast("Card Created successfully!", "success");
@@ -245,18 +248,22 @@ const Board: React.FC = () => {
     quantity: number;
     price: number;
     budget: number;
+    identification_code: string;
   }) => {
     if (!selectedOrg) {
       UseToast("you don't have permission to create card", "error");
     } else {
       console.log(data, "hhhhh");
 
-      // await mutateCreateInquiryCard({
-      //   organization_id: selectedOrg,
-      //   customer_id: data.customerId,
-      //   commodity: data.commodity,
-      //   budget: data.budget,
-      // });
+      await mutateCreateInquiryCard({
+        organization_id: selectedOrg,
+        customer_id: data.customerId,
+        product_id: data.productId,
+        quantity: data.quantity,
+        price: data.price,
+        budget: data.budget,
+        identification_code: data.identification_code,
+      });
     }
   };
 

@@ -47,19 +47,22 @@ export default function ProductList({ data }: ProductListProps) {
         return row.original?.categories?.name;
       },
     },
-    // {
-    //   id: "Other",
-    //   header: "Other",
-    //   cell: ({ row }) => {
-    //     return <span>...</span>;
-    //   },
-    // },
     {
       accessorKey: "description",
       header: "Description",
       cell: ({ row }) => {
         const desc = row.original.description || "";
-        return desc.length > 10 ? desc.slice(0, 30) + "..." : desc;
+        const shortDesc = desc.length > 30 ? desc.slice(0, 30) + "..." : desc;
+        return (
+          <div className="relative group cursor-pointer w-max">
+            <span>{shortDesc}</span>
+            {desc && (
+              <div className="absolute left-0 top-full mt-1 hidden w-96 rounded-md bg-gray-700 px-2 py-1 text-sm text-white shadow-lg group-hover:block z-10">
+                {desc}
+              </div>
+            )}
+          </div>
+        );
       },
     },
     { accessorKey: "price", header: "Price" },
