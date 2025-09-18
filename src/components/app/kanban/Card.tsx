@@ -40,7 +40,7 @@ const Card: React.FC<CardProps> = ({ cardData, reloadCards }) => {
       style={style}
       id={id}
       className={`bg-white rounded-lg shadow-md p-3 cursor-grab ${
-        isDragging ? "opacity-100" : "opacity-95"
+        isDragging ? "bg-opacity-100" : "bg-opacity-95"
       }`}
     >
       {column.position === 1 && (

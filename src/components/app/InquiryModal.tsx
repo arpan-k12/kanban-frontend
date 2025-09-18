@@ -7,23 +7,18 @@ import { useQuery } from "@tanstack/react-query";
 import type { Product } from "../../types/product.type";
 import { GetProductAPI } from "../../api/product.api";
 import { GetUniqueIdentificationCodeAPI } from "../../api/inquiry.api";
-import { RefreshCcw, Plus, Trash2 } from "lucide-react";
-
-interface ItemInput {
-  productId: string;
-  quantity: number;
-  unit_price: number;
-  total_price: number;
-}
+import { RefreshCcw, Plus, Trash2, X } from "lucide-react";
+import type { ItemInput } from "../../types/inquiryItem.type";
 
 interface InquiryModalProps {
   isOpen: boolean;
   onClose: () => void;
   onAdd: (data: {
     customerId: string;
-    items: ItemInput[];
+    grand_total: number;
     budget: number;
     identification_code: string;
+    items: ItemInput[];
   }) => void;
 }
 
@@ -75,7 +70,7 @@ const InquiryModal: React.FC<InquiryModalProps> = ({
     items: Yup.array()
       .of(
         Yup.object().shape({
-          productId: Yup.string().required("Product is required"),
+          product_id: Yup.string().required("Product is required"),
           quantity: Yup.number()
             .min(1, "Quantity must be at least 1")
             .required("Quantity is required"),
@@ -100,11 +95,10 @@ const InquiryModal: React.FC<InquiryModalProps> = ({
             aria-label="Close"
             className="text-gray-500 hover:text-gray-700"
           >
-            ✕
+            <X />
           </button>
         </div>
 
-        {/* Scrollable content area */}
         <div className="p-6 overflow-auto max-h-[64vh]">
           <Formik
             initialValues={{
@@ -112,7 +106,7 @@ const InquiryModal: React.FC<InquiryModalProps> = ({
               identification_code: uniqueCode || "",
               items: [
                 {
-                  productId: "",
+                  product_id: "",
                   quantity: 1,
                   unit_price: 0,
                   total_price: 0,
@@ -123,16 +117,21 @@ const InquiryModal: React.FC<InquiryModalProps> = ({
             enableReinitialize
             validationSchema={validationSchema}
             onSubmit={(values, { resetForm }) => {
+              const grandTotal = values.items.reduce(
+                (s, it) => s + Number(it.total_price || 0),
+                0
+              );
+
               const prepared = {
                 customerId: values.customerId,
-                items: values.items.map((it) => ({
-                  productId: it.productId,
-                  quantity: Number(it.quantity),
-                  unit_price: Number(it.unit_price),
-                  total_price: Number(it.total_price),
-                })),
                 budget: Number(values.budget),
                 identification_code: values.identification_code,
+                grand_total: grandTotal,
+                items: values.items.map((it) => ({
+                  product_id: it.product_id,
+                  quantity: Number(it.quantity),
+                  total_price: Number(it.total_price),
+                })),
               };
               onAdd(prepared);
               resetForm();
@@ -140,14 +139,12 @@ const InquiryModal: React.FC<InquiryModalProps> = ({
             }}
           >
             {({ values, setFieldValue, isSubmitting }) => {
-              // Recalculate unit_price/total_price for each item whenever products or quantities change
               useEffect(() => {
                 (values.items || []).forEach((item, idx) => {
-                  const prod = products.find((p) => p.id === item.productId);
+                  const prod = products.find((p) => p.id === item.product_id);
                   const unit = prod ? Number(prod.price) : 0;
                   const qty = Number(item.quantity) || 0;
                   const total = Number((unit * qty).toFixed(2));
-                  // only set if different to avoid unnecessary updates
                   if (item.unit_price !== unit) {
                     setFieldValue(`items.${idx}.unit_price`, unit, false);
                   }
@@ -155,10 +152,8 @@ const InquiryModal: React.FC<InquiryModalProps> = ({
                     setFieldValue(`items.${idx}.total_price`, total, false);
                   }
                 });
-                // eslint-disable-next-line react-hooks/exhaustive-deps
               }, [values.items, products]);
 
-              // helper to compute grand total (optional)
               const grandTotal = values.items.reduce(
                 (s, it) => s + Number(it.total_price || 0),
                 0
@@ -166,16 +161,15 @@ const InquiryModal: React.FC<InquiryModalProps> = ({
 
               return (
                 <Form className="space-y-6">
-                  {/* First row: Customer + Identification code + Add row */}
-                  <div className="flex gap-4">
-                    <div className="flex-1">
+                  <div className="grid grid-cols-12 gap-3 items-center">
+                    <div className="col-span-6">
                       <label className="block text-sm font-medium text-gray-700 mb-1">
                         Customer
                       </label>
                       <Field
                         as="select"
                         name="customerId"
-                        className="w-full border rounded-lg p-2 focus:ring-2 focus:ring-blue-500"
+                        className="w-full border rounded-lg p-2 bg-gray-100 text-gray-600"
                       >
                         <option value="">Select a customer</option>
                         {customers.map((cust) => (
@@ -191,36 +185,37 @@ const InquiryModal: React.FC<InquiryModalProps> = ({
                       />
                     </div>
 
-                    <div className="w-[260px]">
+                    <div className="col-span-5">
                       <label className="block text-sm font-medium text-gray-700 mb-1">
                         Identification Code
                       </label>
-                      <div className="flex items-center gap-2">
-                        <Field
-                          type="text"
-                          name="identification_code"
-                          disabled
-                          className="flex-1 border rounded-lg p-2 bg-gray-100 text-gray-600"
+                      <Field
+                        type="text"
+                        name="identification_code"
+                        disabled
+                        className="w-full border rounded-lg p-2 bg-gray-100 text-gray-600"
+                      />
+                    </div>
+
+                    <div className="col-span-1">
+                      <button
+                        type="button"
+                        disabled={!!uniqueCode}
+                        onClick={() => refetchCode()}
+                        className={`p-2 rounded-full mt-4 ${
+                          uniqueCode
+                            ? "bg-gray-300 cursor-not-allowed text-gray-500"
+                            : "bg-gray-200 hover:bg-gray-300 text-gray-700"
+                        }`}
+                        title={
+                          uniqueCode ? "Code already generated" : "Generate"
+                        }
+                      >
+                        <RefreshCcw
+                          size={18}
+                          className={isLoadingCode ? "animate-spin" : ""}
                         />
-                        <button
-                          type="button"
-                          disabled={!!uniqueCode}
-                          onClick={() => refetchCode()}
-                          className={`p-2 rounded-full ${
-                            uniqueCode
-                              ? "bg-gray-300 cursor-not-allowed text-gray-500"
-                              : "bg-gray-200 hover:bg-gray-300 text-gray-700"
-                          }`}
-                          title={
-                            uniqueCode ? "Code already generated" : "Generate"
-                          }
-                        >
-                          <RefreshCcw
-                            size={18}
-                            className={isLoadingCode ? "animate-spin" : ""}
-                          />
-                        </button>
-                      </div>
+                      </button>
                       <ErrorMessage
                         name="identification_code"
                         component="p"
@@ -232,23 +227,28 @@ const InquiryModal: React.FC<InquiryModalProps> = ({
                         </p>
                       )}
                     </div>
+                  </div>
 
-                    <div className="w-12 flex items-end">
-                      {/* Add new row button */}
+                  <div className="grid grid-cols-12 gap-3 items-center mb-0">
+                    <div className="col-span-5 ">Product</div>
+                    <div className="col-span-2 ">Qty</div>
+                    <div className="col-span-2 ">Unit</div>
+                    <div className="col-span-2 ">Total</div>
+                    <div className="col-span-1  mt-1">
                       <FieldArray name="items">
                         {(arrayHelpers) => (
                           <button
                             type="button"
                             onClick={() =>
                               arrayHelpers.push({
-                                productId: "",
+                                product_id: "",
                                 quantity: 1,
                                 unit_price: 0,
                                 total_price: 0,
                               })
                             }
                             title="Add product row"
-                            className="flex items-center justify-center w-10 h-10 rounded-full bg-green-600 text-white hover:bg-green-700"
+                            className="flex items-center justify-center w-8 h-8 rounded-md bg-blue-500 text-white hover:bg-blue-600 cursor-pointer"
                           >
                             <Plus size={16} />
                           </button>
@@ -257,7 +257,6 @@ const InquiryModal: React.FC<InquiryModalProps> = ({
                     </div>
                   </div>
 
-                  {/* Product rows */}
                   <div>
                     <FieldArray name="items">
                       {(arrayHelpers) => (
@@ -267,33 +266,42 @@ const InquiryModal: React.FC<InquiryModalProps> = ({
                               key={index}
                               className="grid grid-cols-12 gap-3 items-center"
                             >
-                              <div className="col-span-6">
-                                <label className="block text-sm font-medium text-gray-700 mb-1">
+                              <div className="col-span-5">
+                                {/* <label className="block text-sm font-medium text-gray-700 mb-1">
                                   Product
-                                </label>
+                                </label> */}
                                 <Field
                                   as="select"
-                                  name={`items.${index}.productId`}
+                                  name={`items.${index}.product_id`}
                                   className="w-full border rounded-lg p-2 focus:ring-2 focus:ring-blue-500"
                                 >
                                   <option value="">Select a product</option>
-                                  {products.map((prod) => (
-                                    <option key={prod.id} value={prod.id}>
-                                      {prod.name} (₹{prod.price})
-                                    </option>
-                                  ))}
+                                  {products
+                                    .filter(
+                                      (prod) =>
+                                        !values.items.some(
+                                          (it, idx) =>
+                                            idx !== index &&
+                                            it.product_id === prod.id
+                                        )
+                                    )
+                                    .map((prod) => (
+                                      <option key={prod.id} value={prod.id}>
+                                        {prod.name} (₹{prod.price})
+                                      </option>
+                                    ))}
                                 </Field>
                                 <ErrorMessage
-                                  name={`items.${index}.productId`}
+                                  name={`items.${index}.product_id`}
                                   component="p"
                                   className="text-red-500 text-sm mt-1"
                                 />
                               </div>
 
                               <div className="col-span-2">
-                                <label className="block text-sm font-medium text-gray-700 mb-1">
+                                {/* <label className="block text-sm font-medium text-gray-700 mb-1">
                                   Qty
-                                </label>
+                                </label> */}
                                 <Field
                                   type="number"
                                   name={`items.${index}.quantity`}
@@ -308,9 +316,9 @@ const InquiryModal: React.FC<InquiryModalProps> = ({
                               </div>
 
                               <div className="col-span-2">
-                                <label className="block text-sm font-medium text-gray-700 mb-1">
+                                {/* <label className="block text-sm font-medium text-gray-700 mb-1">
                                   Unit
-                                </label>
+                                </label> */}
                                 <Field
                                   type="number"
                                   name={`items.${index}.unit_price`}
@@ -320,9 +328,9 @@ const InquiryModal: React.FC<InquiryModalProps> = ({
                               </div>
 
                               <div className="col-span-2">
-                                <label className="block text-sm font-medium text-gray-700 mb-1">
+                                {/* <label className="block text-sm font-medium text-gray-700 mb-1">
                                   Total
-                                </label>
+                                </label> */}
                                 <Field
                                   type="number"
                                   name={`items.${index}.total_price`}
@@ -331,15 +339,14 @@ const InquiryModal: React.FC<InquiryModalProps> = ({
                                 />
                               </div>
 
-                              <div className="col-span-12 flex justify-end mt-1">
+                              <div className="col-span-1">
                                 <button
                                   type="button"
                                   onClick={() => arrayHelpers.remove(index)}
-                                  className="flex items-center gap-2 px-3 py-1 rounded-md bg-red-100 text-red-700 hover:bg-red-200"
+                                  className="px-3 py-1 mt-2 rounded-md bg-red-100 text-red-700 hover:bg-red-200 cursor-pointer"
                                   title="Remove row"
                                 >
-                                  <Trash2 size={14} />
-                                  Remove
+                                  <Trash2 size={20} />
                                 </button>
                               </div>
                             </div>
@@ -349,7 +356,6 @@ const InquiryModal: React.FC<InquiryModalProps> = ({
                     </FieldArray>
                   </div>
 
-                  {/* Budget & summary */}
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -378,7 +384,6 @@ const InquiryModal: React.FC<InquiryModalProps> = ({
                     </div>
                   </div>
 
-                  {/* Actions */}
                   <div className="flex justify-end gap-3 pt-3">
                     <button
                       type="button"

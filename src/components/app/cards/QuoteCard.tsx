@@ -83,22 +83,15 @@ const QuoteCard: React.FC<Props> = ({
         <p className="text-xs text-gray-500">{customer?.c_email}</p>
       </div>
 
-      {inquiry?.product?.name && (
-        <p className="text-xs text-gray-700">
-          <span className="font-medium">Product: </span>
-          {inquiry?.product?.name}
-        </p>
-      )}
+      <p className="text-xs text-gray-700">
+        <span className="font-medium">Number of Product: </span>
+        {inquiry?.items?.length}
+      </p>
       <div className="mt-2 grid grid-cols-2 gap-x-3 gap-y-1 text-xs text-gray-600">
-        {inquiry?.quantity && (
+        {inquiry?.grand_total && (
           <p>
-            <span className="font-medium">Qty: </span>
-            {inquiry?.quantity}
-          </p>
-        )}
-        {inquiry?.price && (
-          <p>
-            <span className="font-medium">Price: </span>₹{inquiry?.price}
+            <span className="font-medium">Total Price: </span>₹
+            {inquiry?.grand_total}
           </p>
         )}
         {inquiry?.budget && (

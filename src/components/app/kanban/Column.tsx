@@ -36,14 +36,14 @@ const Column: React.FC<ColumnProps> = ({
   return (
     <div
       ref={setNodeRef}
-      className={`flex flex-col bg-gray-100 rounded-lg shadow-md p-4 h-[43rem] overflow-y-auto  [&::-webkit-scrollbar]:w-2
+      className={`flex flex-col bg-[#f7fdd7] rounded-lg shadow-md p-4 mh-[43rem] h-fit overflow-y-auto  [&::-webkit-scrollbar]:w-2
   [&::-webkit-scrollbar-track]:bg-gray-100  [&::-webkit-scrollbar-thumb]:bg-gray-300 w-72 transition-colors ${
-    isOver ? "bg-blue-100" : "bg-gray-100"
+    isOver ? "bg-[#f7fdd7]" : "bg-[#f7fdd7]"
   }`}
     >
-      <div className="flex justify-between relative">
+      <div className="flex justify-between">
         <div className="text-lg font-semibold mb-4">{column?.name}</div>
-        <div
+        {/* <div
           className="flex items-center gap-1 text-sm cursor-pointer"
           onClick={() => setShowDropdown((v) => !v)}
         >
@@ -56,7 +56,7 @@ const Column: React.FC<ColumnProps> = ({
               keepOpen
             />
           )}
-        </div>
+        </div> */}
       </div>
       <div className="flex flex-col gap-3">
         {cards.length > 0 ? (
