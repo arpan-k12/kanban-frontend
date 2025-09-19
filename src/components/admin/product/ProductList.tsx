@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { useKeenSlider } from "keen-slider/react";
 import "keen-slider/keen-slider.min.css";
 import type { Product } from "../../../types/product.type";
 import { useMutation, useQueryClient } from "@tanstack/react-query";

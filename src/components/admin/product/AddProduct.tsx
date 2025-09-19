@@ -176,7 +176,6 @@ export default function AddProduct() {
             className="mt-1 w-full border rounded-md px-3 py-2 text-sm shadow-sm"
           />
 
-          {/* Image Preview Grid */}
           {formik.values.image.length > 0 && (
             <div className="mt-3 grid grid-cols-6">
               {formik.values.image.map((file, index) => (
@@ -206,7 +205,6 @@ export default function AddProduct() {
           )}
         </div>
 
-        {/* Actions */}
         <div className="flex justify-end space-x-3 pt-4">
           <button
             type="button"

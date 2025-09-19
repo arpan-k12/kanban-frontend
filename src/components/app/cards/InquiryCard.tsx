@@ -1,8 +1,6 @@
 import React from "react";
 import type { CardData } from "../../../types/card.type";
-import CardEditor from "../common/CardEditor";
 import { Pencil } from "lucide-react";
-import { updateCustomerAPI } from "../../../api/customer.api";
 import { updateInquiryAPI } from "../../../api/inquiry.api";
 import { useMutation } from "@tanstack/react-query";
 import UseToast from "../../../hooks/useToast";

@@ -25,13 +25,13 @@ const Column: React.FC<ColumnProps> = ({
     id,
   });
 
-  const [showDropdown, setShowDropdown] = useState(false);
-  const [selectedItems, setSelectedItems] = useState<string[]>([]);
+  // const [showDropdown, setShowDropdown] = useState(false);
+  // const [selectedItems, setSelectedItems] = useState<string[]>([]);
 
-  const handleSortChange = (items: string[]) => {
-    setSelectedItems(items);
-    if (onSortChange) onSortChange(id, items);
-  };
+  // const handleSortChange = (items: string[]) => {
+  //   setSelectedItems(items);
+  //   if (onSortChange) onSortChange(id, items);
+  // };
 
   return (
     <div

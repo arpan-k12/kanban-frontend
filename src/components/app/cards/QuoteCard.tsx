@@ -68,6 +68,7 @@ const QuoteCard: React.FC<Props> = ({
         : hasPermission("can_edit", "quote")) && (
         <button
           onClick={() => setIsEditing(true)}
+          disabled={isCreating || isUpdating}
           onMouseDown={(e) => e.stopPropagation()}
           onPointerDown={(e) => e.stopPropagation()}
           className="absolute top-2 right-2 text-gray-500 hover:text-blue-600 cursor-pointer"

@@ -10,7 +10,6 @@ import { useEffect, useState } from "react";
 import type { ProductFormValues } from "../../../types/product.type";
 import { BASE_URL } from "../../../config/dotenv.config";
 
-// ✅ Validation Schema
 const validationSchema = Yup.object({
   name: Yup.string().trim().required("Product name is required"),
   category_id: Yup.string().required("Category is required"),
@@ -25,7 +24,7 @@ const validationSchema = Yup.object({
       files
         ? files.every(
             (file) =>
-              typeof file === "string" || // old image
+              typeof file === "string" ||
               ["image/jpeg", "image/png", "image/webp"].includes(file.type)
           )
         : true

@@ -169,7 +169,7 @@ const InquiryModal: React.FC<InquiryModalProps> = ({
                       <Field
                         as="select"
                         name="customerId"
-                        className="w-full border rounded-lg p-2 bg-gray-100 text-gray-600"
+                        className="w-full border rounded-lg p-2 text-gray-600"
                       >
                         <option value="">Select a customer</option>
                         {customers.map((cust) => (
@@ -267,9 +267,6 @@ const InquiryModal: React.FC<InquiryModalProps> = ({
                               className="grid grid-cols-12 gap-3 items-center"
                             >
                               <div className="col-span-5">
-                                {/* <label className="block text-sm font-medium text-gray-700 mb-1">
-                                  Product
-                                </label> */}
                                 <Field
                                   as="select"
                                   name={`items.${index}.product_id`}
@@ -299,9 +296,6 @@ const InquiryModal: React.FC<InquiryModalProps> = ({
                               </div>
 
                               <div className="col-span-2">
-                                {/* <label className="block text-sm font-medium text-gray-700 mb-1">
-                                  Qty
-                                </label> */}
                                 <Field
                                   type="number"
                                   name={`items.${index}.quantity`}
@@ -316,9 +310,6 @@ const InquiryModal: React.FC<InquiryModalProps> = ({
                               </div>
 
                               <div className="col-span-2">
-                                {/* <label className="block text-sm font-medium text-gray-700 mb-1">
-                                  Unit
-                                </label> */}
                                 <Field
                                   type="number"
                                   name={`items.${index}.unit_price`}
@@ -328,9 +319,6 @@ const InquiryModal: React.FC<InquiryModalProps> = ({
                               </div>
 
                               <div className="col-span-2">
-                                {/* <label className="block text-sm font-medium text-gray-700 mb-1">
-                                  Total
-                                </label> */}
                                 <Field
                                   type="number"
                                   name={`items.${index}.total_price`}
@@ -342,8 +330,13 @@ const InquiryModal: React.FC<InquiryModalProps> = ({
                               <div className="col-span-1">
                                 <button
                                   type="button"
+                                  disabled={values?.items?.length === 1}
                                   onClick={() => arrayHelpers.remove(index)}
-                                  className="px-3 py-1 mt-2 rounded-md bg-red-100 text-red-700 hover:bg-red-200 cursor-pointer"
+                                  className={`px-3 py-1 mt-2 rounded-md bg-red-100 text-red-700 hover:bg-red-200 ${
+                                    values?.items?.length === 1
+                                      ? "cursor-not-allowed"
+                                      : "cursor-pointer"
+                                  } `}
                                   title="Remove row"
                                 >
                                   <Trash2 size={20} />
@@ -394,7 +387,7 @@ const InquiryModal: React.FC<InquiryModalProps> = ({
                     </button>
                     <button
                       type="submit"
-                      disabled={isSubmitting || isLoadingCode}
+                      disabled={isSubmitting || isLoadingCode || !uniqueCode}
                       className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
                     >
                       {isSubmitting ? "Adding..." : "Add"}

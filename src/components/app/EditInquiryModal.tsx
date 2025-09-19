@@ -216,8 +216,13 @@ export default function EditInquiryModal({
                                 <div className="col-span-1">
                                   <button
                                     type="button"
+                                    disabled={values?.items?.length === 1}
                                     onClick={() => arrayHelpers.remove(index)}
-                                    className="p-2 rounded-md bg-red-100 text-red-600 hover:bg-red-200"
+                                    className={`p-2 rounded-md bg-red-100 text-red-600 hover:bg-red-200 ${
+                                      values?.items?.length === 1
+                                        ? "cursor-not-allowed"
+                                        : "cursor-pointer"
+                                    } `}
                                   >
                                     <Trash2 size={16} />
                                   </button>

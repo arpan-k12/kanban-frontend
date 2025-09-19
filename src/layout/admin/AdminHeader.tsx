@@ -120,14 +120,6 @@ const AdminHeader: React.FC = () => {
               </button>
             </Dropdown>
           </div>
-          {/* <div className="flex items-center gap-2 2xsm:gap-3">
-            <button
-              onClick={handleLogout}
-              className="bg-red-500 px-3 py-1 rounded cursor-pointer hover:bg-red-600"
-            >
-              Logout
-            </button>
-          </div> */}
         </div>
       </div>
     </header>
