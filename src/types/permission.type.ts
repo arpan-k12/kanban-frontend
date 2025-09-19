@@ -1,6 +1,6 @@
 export type Permission = "can_create" | "can_edit" | "can_view";
 
-export interface Permissions {
+export interface PermissionsType {
   byFeature: {
     [feature: string]: Permission[];
   };

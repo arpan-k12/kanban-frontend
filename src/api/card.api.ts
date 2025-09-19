@@ -1,12 +1,12 @@
 import type { AxiosResponse } from "../types/Axios";
-import type { CardData } from "../types/card.type";
+import type { CardDataType } from "../types/card.type";
 import { request } from "./request";
 
 export const fetchCardsAPI = async (params?: {
   columnId?: string | null;
   sort?: string[];
   organizationId?: string;
-}): Promise<CardData[]> => {
+}): Promise<CardDataType[]> => {
   const apiParams: Record<string, any> = {};
 
   if (params?.columnId) apiParams.columnId = params.columnId;
@@ -15,7 +15,7 @@ export const fetchCardsAPI = async (params?: {
   }
   if (params?.organizationId) apiParams.organizationId = params.organizationId;
 
-  const response: AxiosResponse<CardData[]> = await request({
+  const response: AxiosResponse<CardDataType[]> = await request({
     url: "card",
     method: "GET",
     params: apiParams,
@@ -28,8 +28,8 @@ export const moveCard = async (
   id: string,
   destinationColumnId: string,
   newCard_position: number
-): Promise<CardData> => {
-  const response: AxiosResponse<CardData> = await request({
+): Promise<CardDataType> => {
+  const response: AxiosResponse<CardDataType> = await request({
     url: `card/${id}`,
     method: "PATCH",
     body: {
@@ -38,14 +38,14 @@ export const moveCard = async (
     },
   });
 
-  return response?.data ?? ({} as CardData);
+  return response?.data ?? ({} as CardDataType);
 };
 
 export const updateCardSummaryAPI = async (
   id: string,
   summary: string
 ): Promise<any> => {
-  const response: AxiosResponse<CardData> = await request({
+  const response: AxiosResponse<CardDataType> = await request({
     url: `card/summary/${id}`,
     method: "PATCH",
     body: { summary },

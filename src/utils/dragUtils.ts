@@ -1,12 +1,12 @@
 // src/utils/dragUtils.ts
 import type { DragEndEvent } from "@dnd-kit/core";
-import type { CardData } from "../types/card.type";
+import type { CardDataType } from "../types/card.type";
 import type { ColumnType } from "../types/column.type";
 import { toast } from "react-toastify";
 
 interface HandleDragEndParams {
   event: DragEndEvent;
-  cards: CardData[];
+  cards: CardDataType[];
   columns: ColumnType[];
   mutateMoveCard: (args: {
     id: string;
@@ -73,7 +73,7 @@ export const handleDragEndHelper = async ({
     )
     .sort((a, b) => (a.card_position ?? 0) - (b.card_position ?? 0));
 
-  let newDestinationCards: CardData[] = [
+  let newDestinationCards: CardDataType[] = [
     ...destinationCards.slice(0, overIndex),
     { ...activeCard, column_id: destinationColumnId },
     ...destinationCards.slice(overIndex),

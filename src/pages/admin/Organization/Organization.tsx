@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import { Plus } from "lucide-react";
-import type { Organization } from "../../../types/organization.type";
+import type { OrganizationType } from "../../../types/organization.type";
 import { GetOrganizationAPI } from "../../../api/organization.api";
 import OrganizationList from "../../../components/admin/organization/OrganizationList";
 
@@ -10,7 +10,7 @@ export default function Organization() {
     data: organization = [],
     isLoading,
     isError,
-  } = useQuery<Organization[]>({
+  } = useQuery<OrganizationType[]>({
     queryKey: ["GetOrganizationAPI"],
     queryFn: GetOrganizationAPI,
   });

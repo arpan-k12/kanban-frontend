@@ -1,10 +1,10 @@
-import type { Customer } from "../types/customer.type";
+import type { CustomerType } from "../types/customer.type";
 import type { AxiosResponse } from "../types/Axios";
 
 import { request } from "./request";
 
 export const GetAllCustomerAPI = async () => {
-  const response: AxiosResponse<any> = await request({
+  const response: AxiosResponse<CustomerType[]> = await request({
     url: `customer`,
     method: "GET",
   });
@@ -14,12 +14,12 @@ export const GetAllCustomerAPI = async () => {
 export const updateCustomerAPI = async (
   id: string,
   body: { c_name: string; c_email: string }
-): Promise<Customer> => {
-  const response: AxiosResponse<Customer> = await request({
+): Promise<CustomerType> => {
+  const response: AxiosResponse<CustomerType> = await request({
     url: `customer/${id}`,
     method: "PATCH",
     body,
   });
 
-  return response?.data ?? ({} as Customer);
+  return response?.data ?? ({} as CustomerType);
 };

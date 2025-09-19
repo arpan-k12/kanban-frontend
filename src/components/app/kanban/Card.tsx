@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import type { CardData } from "../../../types/card.type";
+import type { CardDataType } from "../../../types/card.type";
 import InquiryCard from "../cards/InquiryCard";
 import SummaryCard from "../cards/SummaryCard";
 import QuoteCard from "../cards/QuoteCard";
@@ -8,7 +8,7 @@ import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 
 interface CardProps {
-  cardData: CardData;
+  cardData: CardDataType;
   reloadCards: () => void;
 }
 const Card: React.FC<CardProps> = ({ cardData, reloadCards }) => {

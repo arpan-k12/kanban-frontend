@@ -1,4 +1,4 @@
-export interface categories {
+export interface categoriesType {
   id: string;
   name: string;
   createdAt: string;

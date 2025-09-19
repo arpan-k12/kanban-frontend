@@ -15,7 +15,7 @@ import {
 import Column from "./Column";
 import { GetKanbanColumnsAPI } from "../../../api/kanbanColumn.api";
 import { fetchCardsAPI, moveCard } from "../../../api/card.api";
-import InquiryModal from "../InquiryModal";
+import InquiryModal from "../inquiryModal/InquiryModal";
 import { createInquiryCardAPI } from "../../../api/inquiry.api";
 import type { ColumnType } from "../../../types/column.type";
 import Card from "./Card";
@@ -136,99 +136,6 @@ const Board: React.FC = () => {
     setActiveCardId(event.active.id as string);
   };
 
-  // const handleDragEnd = async (event: DragEndEvent) => {
-  //   const { active, over } = event;
-  //   setActiveCardId(null);
-  //   if (!over || !active) return;
-
-  //   const activeCardId = active.id as string;
-  //   const overCardId = over.id as string;
-
-  //   const activeCard = cards.find((c) => c.id === activeCardId);
-  //   const overCard = cards.find((c) => c.id === overCardId);
-
-  //   if (!activeCard) return;
-
-  //   let destinationColumnId = overCard?.column_id || String(over.id);
-  //   let destinationCards = cards
-  //     .filter((c) => c.column_id === destinationColumnId)
-  //     .sort((a, b) => (a.card_position ?? 0) - (b.card_position ?? 0));
-
-  //   let overIndex = overCard
-  //     ? destinationCards.findIndex((c) => c.id === overCardId)
-  //     : destinationCards.length;
-
-  //   if (activeCard.column_id !== destinationColumnId) {
-  //     const position = activeCard?.column?.position;
-  //     if (position === 1 && !activeCard?.inquiry_id) {
-  //       UseToast("Please fill the inquiry before moving this card!");
-  //       return;
-  //     }
-  //     if (position === 2 && !activeCard?.summary) {
-  //       UseToast("Please fill the summary before moving this card!");
-  //       return;
-  //     }
-  //     if (position === 3 && !activeCard?.quote_id) {
-  //       UseToast("Please attach a quote before moving this card!");
-  //       return;
-  //     }
-  //     const oldColumn = columns.find((col) => col.id === activeCard.column_id);
-  //     const newColumn = columns.find((col) => col.id === destinationColumnId);
-  //     if (!oldColumn || !newColumn) return;
-  //     if (newColumn.position !== oldColumn.position + 1) {
-  //       return;
-  //     }
-  //   }
-
-  //   let sourceCards = cards
-  //     .filter(
-  //       (c) => c.column_id === activeCard.column_id && c.id !== activeCardId
-  //     )
-  //     .sort((a, b) => (a.card_position ?? 0) - (b.card_position ?? 0));
-
-  //   let newDestinationCards: any = [
-  //     ...destinationCards.slice(0, overIndex),
-  //     { ...activeCard, column_id: destinationColumnId },
-  //     ...destinationCards.slice(overIndex),
-  //   ];
-
-  //   newDestinationCards = newDestinationCards.map((c: any, idx: any) => ({
-  //     ...c,
-  //     card_position: idx + 1,
-  //   }));
-  //   sourceCards = sourceCards.map((c, idx) => ({
-  //     ...c,
-  //     card_position: idx + 1,
-  //   }));
-
-  //   // const updatedCards = cards.map((c) => {
-  //   //   if (c.column_id === activeCard.column_id && c.id !== activeCardId) {
-  //   //     return sourceCards.find((sc) => sc.id === c.id)!;
-  //   //   }
-  //   //   if (c.column_id === destinationColumnId || c.id === activeCardId) {
-  //   //     return newDestinationCards.find((dc: any) => dc.id === c.id)!;
-  //   //   }
-  //   //   return c;
-  //   // });
-
-  //   // setCards(updatedCards);
-
-  //   const newCardPosition = newDestinationCards[overIndex].card_position;
-
-  //   if (
-  //     activeCard.column_id === destinationColumnId &&
-  //     activeCard.card_position === newCardPosition
-  //   ) {
-  //     return;
-  //   }
-
-  //   await mutateMoveCard({
-  //     id: activeCardId,
-  //     destinationColumnId,
-  //     newCard_position: newCardPosition,
-  //   });
-  // };
-
   const handleDragEnd = (event: DragEndEvent) =>
     handleDragEndHelper({
       event,
@@ -250,11 +157,11 @@ const Board: React.FC = () => {
     } else {
       await mutateCreateInquiryCard({
         organization_id: selectedOrg,
-        customer_id: data.customerId,
-        grand_total: data.grand_total,
-        budget: data.budget,
-        identification_code: data.identification_code,
-        items: data.items,
+        customer_id: data?.customerId,
+        grand_total: data?.grand_total,
+        budget: data?.budget,
+        identification_code: data?.identification_code,
+        items: data?.items,
       });
     }
   };
@@ -287,7 +194,7 @@ const Board: React.FC = () => {
             )}
           </div>
 
-          <div className="flex flex-wrap justify-evenly gap-6 p-6">
+          <div className="flex flex-wrap justify-evenly gap-6 p-1">
             {columns.map((col) => {
               const sortedCards = cards.filter((c) => c.column_id === col.id);
               return (

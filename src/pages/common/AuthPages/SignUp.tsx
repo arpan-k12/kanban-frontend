@@ -7,8 +7,8 @@ import UseToast from "../../../hooks/useToast";
 import { useAuthStore } from "../../../store/authStore";
 import ReCAPTCHA from "react-google-recaptcha";
 import { useRef, useState } from "react";
+import { RECAPTCHA_SITE_KEY } from "../../../config/dotenv.config";
 
-const RECAPTCHA_SITE_KEY = import.meta.env.VITE_RECAPTCHA_SITE_KEY;
 const validationSchema = Yup.object({
   username: Yup.string()
     .min(3, "Username must be at least 3 characters")

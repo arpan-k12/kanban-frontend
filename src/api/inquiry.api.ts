@@ -1,4 +1,4 @@
-import type { Inquiry } from "../types/inquiry.type";
+import type { InquiryType } from "../types/inquiry.type";
 import type { AxiosResponse } from "../types/Axios";
 
 import { request } from "./request";
@@ -11,8 +11,8 @@ export const createInquiryCardAPI = async (data: {
   budget: number;
   identification_code: string;
   items: ItemInput[];
-}): Promise<Inquiry[]> => {
-  const response: AxiosResponse<Inquiry[]> = await request({
+}): Promise<InquiryType[]> => {
+  const response: AxiosResponse<InquiryType[]> = await request({
     url: "inquiry",
     method: "POST",
     body: data,
@@ -33,14 +33,14 @@ export const updateInquiryAPI = async (
       total_price: number;
     }[];
   }
-): Promise<Inquiry> => {
-  const response: AxiosResponse<Inquiry> = await request({
+): Promise<InquiryType> => {
+  const response: AxiosResponse<InquiryType> = await request({
     url: `inquiry/${id}`,
     method: "PATCH",
     body: data,
   });
 
-  return response?.data ?? ({} as Inquiry);
+  return response?.data ?? ({} as InquiryType);
 };
 
 export const GetUniqueIdentificationCodeAPI = async () => {

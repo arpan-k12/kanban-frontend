@@ -1,4 +1,4 @@
-export interface Decision {
+export interface DecisionType {
   id: string;
   decision: string;
   reason: string;

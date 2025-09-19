@@ -34,7 +34,6 @@ export default function CommonTable<TData>({
       }`}
     >
       <table className="min-w-full border-collapse text-sm">
-        {/* ----- HEAD ----- */}
         <thead className="bg-gradient-to-r from-gray-100 to-gray-200">
           {table.getHeaderGroups().map((headerGroup) => (
             <tr key={headerGroup.id}>
@@ -53,7 +52,6 @@ export default function CommonTable<TData>({
           ))}
         </thead>
 
-        {/* ----- BODY ----- */}
         <tbody className="divide-y divide-gray-200">
           {table.getRowModel().rows.map((row, rowIndex) => (
             <React.Fragment key={row.id}>
@@ -76,7 +74,6 @@ export default function CommonTable<TData>({
                 ))}
               </tr>
 
-              {/* ----- Expandable Row ----- */}
               {expandableRow && (
                 <tr>
                   <td colSpan={row.getVisibleCells().length}>

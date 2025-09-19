@@ -1,14 +1,18 @@
 import React from "react";
 import CardEditor from "../common/CardEditor";
-import type { CardData } from "../../../types/card.type";
+import type { CardDataType } from "../../../types/card.type";
 import { Pencil } from "lucide-react";
 import { createQuoteAPI, updateQuoteAPI } from "../../../api/quote.api";
 import { useMutation } from "@tanstack/react-query";
 import UseToast from "../../../hooks/useToast";
 import { useAuthStore } from "../../../store/authStore";
+import CustomerUI from "../../../ui/app/cardUI/CustomerUI";
+import InquiryUI from "../../../ui/app/cardUI/InquiryUI";
+import SummaryUI from "../../../ui/app/cardUI/SummaryUI";
+import QuoteUI from "../../../ui/app/cardUI/QuoteUI";
 
 interface Props {
-  cardData: CardData;
+  cardData: CardDataType;
   isEditing: boolean;
   setIsEditing: (isEditing: boolean) => void;
   reloadCards: () => void;
@@ -77,49 +81,23 @@ const QuoteCard: React.FC<Props> = ({
           <Pencil size={16} />
         </button>
       )}
-      <div className="mb-2">
-        <h3 className="text-sm font-semibold text-gray-800">
-          {customer?.c_name}
-        </h3>
-        <p className="text-xs text-gray-500">{customer?.c_email}</p>
-      </div>
 
-      <p className="text-xs text-gray-700">
-        <span className="font-medium">Number of Product: </span>
-        {inquiry?.items?.length}
-      </p>
-      <div className="mt-2 grid grid-cols-2 gap-x-3 gap-y-1 text-xs text-gray-600">
-        {inquiry?.grand_total && (
-          <p>
-            <span className="font-medium">Total Price: </span>₹
-            {inquiry?.grand_total}
-          </p>
-        )}
-        {inquiry?.budget && (
-          <p>
-            <span className="font-medium">Budget: </span>₹{inquiry?.budget}
-          </p>
-        )}
-        {inquiry?.identification_code && (
-          <p>
-            <span className="font-medium">Code: </span>
-            {inquiry?.identification_code}
-          </p>
-        )}
+      <div className="mb-4">
+        <CustomerUI customer={customer} />
       </div>
+      <div>
+        <InquiryUI inquiry={inquiry} />
+      </div>
+      {cardData?.summary && <SummaryUI cardData={cardData} />}
 
-      {cardData?.summary && (
-        <p className="mt-2 text-xs text-gray-600">
-          <span className="font-medium">Summary:</span> {cardData?.summary}
-        </p>
-      )}
-      {quote && (
+      {quote && <QuoteUI quote={quote} />}
+
+      {/* {quote && (
         <div className="mt-2 text-xs text-gray-800 space-y-1">
           <div className="font-medium">💰 {quote.amount}</div>
           <span>⏳ {new Date(quote.valid_until).toLocaleDateString()}</span>
         </div>
-      )}
-
+      )} */}
       {isEditing && (
         <CardEditor
           initialData={{

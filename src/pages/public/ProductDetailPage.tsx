@@ -1,7 +1,6 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { getProductByIdAPI } from "../../api/product.api";
 import { useQuery } from "@tanstack/react-query";
-import ProductImgSlider from "../../components/admin/product/ProductImgSlider";
 import { BASE_URL } from "../../config/dotenv.config";
 import ProductDetailsImgSlider from "./ProductDetailsImgSlider";
 import { ArrowLeft } from "lucide-react";
@@ -38,7 +37,7 @@ export default function ProductDetailPage() {
           </button>
         </div>
         <h1 className="text-3xl font-bold text-gray-900 mb-6 capitalize">
-          {product.name}
+          {product?.name}
         </h1>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
@@ -49,9 +48,11 @@ export default function ProductDetailPage() {
           <div className="flex flex-col space-y-4">
             <p className="text-lg text-gray-700 capitalize">
               <span className="font-semibold">Category: </span>
-              {product.categories?.name}
+              {product?.categories?.name}
             </p>
-            <p className="text-2xl font-bold text-blue-500">₹{product.price}</p>
+            <p className="text-2xl font-bold text-blue-500">
+              ₹{product?.price}
+            </p>
           </div>
         </div>
 
@@ -60,7 +61,7 @@ export default function ProductDetailPage() {
             Description
           </h2>
           <p className="text-gray-600 leading-relaxed whitespace-pre-line">
-            {product.description}
+            {product?.description}
           </p>
         </div>
       </div>

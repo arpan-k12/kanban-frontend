@@ -1,7 +1,7 @@
 import type { inquiryItemType } from "./inquiryItem.type";
 import type { Product } from "./product.type";
 
-export interface Inquiry {
+export interface InquiryType {
   id: string;
   customer_id: string;
   grand_total: string;

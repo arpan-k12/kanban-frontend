@@ -1,4 +1,4 @@
-import type { CardData } from "../types/card.type";
+import type { CardDataType } from "../types/card.type";
 
 export const mockCards: any[] = [
   {

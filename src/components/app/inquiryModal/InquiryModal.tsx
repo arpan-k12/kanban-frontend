@@ -1,14 +1,14 @@
 import React, { useEffect } from "react";
-import { GetAllCustomerAPI } from "../../api/customer.api";
+import { GetAllCustomerAPI } from "../../../api/customer.api";
 import { Formik, Form, Field, ErrorMessage, FieldArray } from "formik";
 import * as Yup from "yup";
-import type { Customer } from "../../types/customer.type";
+import type { CustomerType } from "../../../types/customer.type";
 import { useQuery } from "@tanstack/react-query";
-import type { Product } from "../../types/product.type";
-import { GetProductAPI } from "../../api/product.api";
-import { GetUniqueIdentificationCodeAPI } from "../../api/inquiry.api";
+import type { Product } from "../../../types/product.type";
+import { GetProductAPI } from "../../../api/product.api";
+import { GetUniqueIdentificationCodeAPI } from "../../../api/inquiry.api";
 import { RefreshCcw, Plus, Trash2, X } from "lucide-react";
-import type { ItemInput } from "../../types/inquiryItem.type";
+import type { ItemInput } from "../../../types/inquiryItem.type";
 
 interface InquiryModalProps {
   isOpen: boolean;
@@ -41,7 +41,7 @@ const InquiryModal: React.FC<InquiryModalProps> = ({
     data: customers = [],
     isLoading,
     isError,
-  } = useQuery<Customer[]>({
+  } = useQuery<CustomerType[]>({
     queryKey: ["GetAllCustomerAPI"],
     queryFn: GetAllCustomerAPI,
     enabled: isOpen,
@@ -123,14 +123,14 @@ const InquiryModal: React.FC<InquiryModalProps> = ({
               );
 
               const prepared = {
-                customerId: values.customerId,
-                budget: Number(values.budget),
-                identification_code: values.identification_code,
+                customerId: values?.customerId,
+                budget: Number(values?.budget),
+                identification_code: values?.identification_code,
                 grand_total: grandTotal,
-                items: values.items.map((it) => ({
-                  product_id: it.product_id,
-                  quantity: Number(it.quantity),
-                  total_price: Number(it.total_price),
+                items: values?.items?.map((it) => ({
+                  product_id: it?.product_id,
+                  quantity: Number(it?.quantity),
+                  total_price: Number(it?.total_price),
                 })),
               };
               onAdd(prepared);
@@ -279,12 +279,12 @@ const InquiryModal: React.FC<InquiryModalProps> = ({
                                         !values.items.some(
                                           (it, idx) =>
                                             idx !== index &&
-                                            it.product_id === prod.id
+                                            it?.product_id === prod?.id
                                         )
                                     )
                                     .map((prod) => (
-                                      <option key={prod.id} value={prod.id}>
-                                        {prod.name} (₹{prod.price})
+                                      <option key={prod?.id} value={prod?.id}>
+                                        {prod?.name} (₹{prod?.price})
                                       </option>
                                     ))}
                                 </Field>
@@ -331,7 +331,7 @@ const InquiryModal: React.FC<InquiryModalProps> = ({
                                 <button
                                   type="button"
                                   disabled={values?.items?.length === 1}
-                                  onClick={() => arrayHelpers.remove(index)}
+                                  onClick={() => arrayHelpers?.remove(index)}
                                   className={`px-3 py-1 mt-2 rounded-md bg-red-100 text-red-700 hover:bg-red-200 ${
                                     values?.items?.length === 1
                                       ? "cursor-not-allowed"

@@ -3,7 +3,7 @@ import { type ColumnDef } from "@tanstack/react-table";
 import { Edit, ChevronDown, ChevronRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import type { UserOrganizationType } from "../../../types/userOrganization";
-import type { Organization } from "../../../types/organization.type";
+import type { OrganizationType } from "../../../types/organization.type";
 import CommonTable from "../common/CommonTable";
 
 const ROLE_MAP: Record<string, string> = {
@@ -83,7 +83,7 @@ export default function UsersOrganizationList({
     },
   ];
 
-  const orgColumns: ColumnDef<Organization>[] = [
+  const orgColumns: ColumnDef<OrganizationType>[] = [
     { header: "Organization Name", accessorKey: "name" },
     { header: "Industry", accessorKey: "industry" },
     { header: "Address", accessorKey: "address" },

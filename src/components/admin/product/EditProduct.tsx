@@ -9,6 +9,7 @@ import { getCategoriesAPI } from "../../../api/categories.api";
 import { useEffect, useState } from "react";
 import type { ProductFormValues } from "../../../types/product.type";
 import { BASE_URL } from "../../../config/dotenv.config";
+import type { categoriesType } from "../../../types/categories.type";
 
 const validationSchema = Yup.object({
   name: Yup.string().trim().required("Product name is required"),
@@ -54,7 +55,7 @@ export default function EditProduct() {
     enabled: !!id,
   });
 
-  const { data: categories } = useQuery({
+  const { data: categories } = useQuery<categoriesType[]>({
     queryKey: ["getCategoriesAPI"],
     queryFn: getCategoriesAPI,
   });
@@ -173,7 +174,7 @@ export default function EditProduct() {
             className="mt-1 w-full border rounded-md px-3 py-2 text-sm shadow-sm"
           >
             <option value="">Select category</option>
-            {categories?.map((cat: any) => (
+            {categories?.map((cat) => (
               <option key={cat.id} value={cat.id}>
                 {cat.name}
               </option>

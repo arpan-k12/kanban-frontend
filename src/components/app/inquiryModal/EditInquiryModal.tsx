@@ -1,16 +1,16 @@
 import React, { useEffect } from "react";
 import { Formik, Form, Field, FieldArray, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import type { Inquiry } from "../../types/inquiry.type";
-import type { Customer } from "../../types/customer.type";
-import type { Product } from "../../types/product.type";
-import { GetProductAPI } from "../../api/product.api";
+import type { InquiryType } from "../../../types/inquiry.type";
+import type { CustomerType } from "../../../types/customer.type";
+import type { Product } from "../../../types/product.type";
+import { GetProductAPI } from "../../../api/product.api";
 import { useQuery } from "@tanstack/react-query";
 import { Plus, Trash2, X } from "lucide-react";
 
 interface EditInquiryModalProps {
-  inquiry: Inquiry;
-  customer: Customer;
+  inquiry: InquiryType;
+  customer: CustomerType;
   onClose: () => void;
   onSubmit: (values: any) => void;
 }
@@ -65,16 +65,16 @@ export default function EditInquiryModal({
         <div className="p-6 overflow-auto max-h-[64vh]">
           <Formik
             initialValues={{
-              budget: inquiry.budget,
-              identification_code: inquiry.identification_code,
-              customer_name: customer.c_name,
-              customer_email: customer.c_email,
-              items: inquiry.items.map((item) => ({
-                id: item.id,
-                product_id: item.product_id,
-                quantity: Number(item.quantity),
-                unit_price: Number(item.product?.price || 0),
-                total_price: Number(item.total_price),
+              budget: inquiry?.budget,
+              identification_code: inquiry?.identification_code,
+              customer_name: customer?.c_name,
+              customer_email: customer?.c_email,
+              items: inquiry?.items.map((item) => ({
+                id: item?.id,
+                product_id: item?.product_id,
+                quantity: Number(item?.quantity),
+                unit_price: Number(item?.product?.price || 0),
+                total_price: Number(item?.total_price),
               })),
             }}
             validationSchema={validationSchema}
@@ -117,7 +117,7 @@ export default function EditInquiryModal({
                       </label>
                       <input
                         type="text"
-                        value={`${values.customer_name} (${values.customer_email})`}
+                        value={`${values?.customer_name} (${values?.customer_email})`}
                         disabled
                         className="w-full border rounded-lg p-2 bg-gray-100 text-gray-600"
                       />
@@ -128,7 +128,7 @@ export default function EditInquiryModal({
                       </label>
                       <input
                         type="text"
-                        value={values.identification_code}
+                        value={values?.identification_code}
                         disabled
                         className="w-full border rounded-lg p-2 bg-gray-100 text-gray-600"
                       />
@@ -156,7 +156,7 @@ export default function EditInquiryModal({
                             </button>
                           </div>
                           <div className="space-y-2">
-                            {values.items.map((item, index) => (
+                            {values?.items.map((item, index) => (
                               <div
                                 key={index}
                                 className="grid grid-cols-12 gap-2 items-center"
@@ -171,7 +171,7 @@ export default function EditInquiryModal({
                                     {products
                                       .filter(
                                         (prod) =>
-                                          !values.items.some(
+                                          !values?.items.some(
                                             (it, idx) =>
                                               idx !== index &&
                                               it.product_id === prod.id

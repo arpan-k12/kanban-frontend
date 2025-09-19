@@ -56,7 +56,7 @@ export default function ProductList({ data }: ProductListProps) {
           <div className="relative group cursor-pointer w-max">
             <span>{shortDesc}</span>
             {desc && (
-              <div className="absolute left-0 top-full mt-1 hidden w-96 rounded-md bg-gray-700 px-2 py-1 text-sm text-white shadow-lg group-hover:block z-10">
+              <div className="absolute left-0 bottom-full mb-1 hidden w-96 rounded-md bg-gray-700 px-2 py-1 text-sm text-white shadow-lg group-hover:block z-10">
                 {desc}
               </div>
             )}

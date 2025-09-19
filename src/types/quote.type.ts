@@ -1,4 +1,4 @@
-export interface Quote {
+export interface QuoteType {
   id: string;
   amount: number;
   valid_until: string;

@@ -34,16 +34,18 @@ const Column: React.FC<ColumnProps> = ({
   // };
 
   return (
-    <div
-      ref={setNodeRef}
-      className={`flex flex-col bg-[#f7fdd7] rounded-lg shadow-md p-4 mh-[43rem] h-fit overflow-y-auto  [&::-webkit-scrollbar]:w-2
+    <div>
+      <div className="text-lg font-semibold mb-4">{column?.name}</div>
+
+      <div
+        ref={setNodeRef}
+        className={`flex flex-col bg-[#f7fdd7] rounded-lg shadow-md p-4 max-h-[43rem] h-fit overflow-y-auto  [&::-webkit-scrollbar]:w-2
   [&::-webkit-scrollbar-track]:bg-gray-100  [&::-webkit-scrollbar-thumb]:bg-gray-300 w-72 transition-colors ${
     isOver ? "bg-[#f7fdd7]" : "bg-[#f7fdd7]"
   }`}
-    >
-      <div className="flex justify-between">
-        <div className="text-lg font-semibold mb-4">{column?.name}</div>
-        {/* <div
+      >
+        <div className="flex justify-between">
+          {/* <div
           className="flex items-center gap-1 text-sm cursor-pointer"
           onClick={() => setShowDropdown((v) => !v)}
         >
@@ -57,15 +59,16 @@ const Column: React.FC<ColumnProps> = ({
             />
           )}
         </div> */}
-      </div>
-      <div className="flex flex-col gap-3">
-        {cards.length > 0 ? (
-          cards.map((card) => (
-            <Card key={card?.id} cardData={card} reloadCards={reloadCards} />
-          ))
-        ) : (
-          <p className="text-sm text-gray-500 italic">No cards yet...</p>
-        )}
+        </div>
+        <div className="flex flex-col gap-3">
+          {cards.length > 0 ? (
+            cards.map((card) => (
+              <Card key={card?.id} cardData={card} reloadCards={reloadCards} />
+            ))
+          ) : (
+            <p className="text-sm text-gray-500 italic">No cards yet...</p>
+          )}
+        </div>
       </div>
     </div>
   );

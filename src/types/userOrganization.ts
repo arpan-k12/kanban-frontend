@@ -1,4 +1,4 @@
-import type { Organization } from "./organization.type";
+import type { OrganizationType } from "./organization.type";
 
 export interface UserOrganizationType {
   id: string;
@@ -8,5 +8,5 @@ export interface UserOrganizationType {
   createdAt: string;
   updatedAt: string;
   deletedAt: string | null;
-  organizations: Organization[];
+  organizations: OrganizationType[];
 }

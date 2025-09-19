@@ -1,10 +1,10 @@
 import type { ColumnType } from "./column.type";
-import type { Customer } from "./customer.type";
-import type { Decision } from "./decision.type";
-import type { Inquiry } from "./inquiry.type";
-import type { Quote } from "./quote.type";
+import type { CustomerType } from "./customer.type";
+import type { DecisionType } from "./decision.type";
+import type { InquiryType } from "./inquiry.type";
+import type { QuoteType } from "./quote.type";
 
-export interface CardData {
+export interface CardDataType {
   id: string;
   column_id: string;
   card_position: number;
@@ -18,8 +18,8 @@ export interface CardData {
   updatedAt: string;
   deletedAt: string | null;
   column: ColumnType;
-  inquiry: Inquiry;
-  customer?: Customer;
-  quote?: Quote;
-  decision?: Decision;
+  inquiry: InquiryType;
+  customer?: CustomerType;
+  quote?: QuoteType;
+  decision?: DecisionType;
 }

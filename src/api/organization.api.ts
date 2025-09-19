@@ -1,12 +1,13 @@
 import type { AxiosResponse } from "../types/Axios.ts";
+import type { OrganizationType } from "../types/organization.type.ts";
 import { request } from "./request.ts";
 
 export const GetOrganizationAPI = async () => {
-  const response: AxiosResponse<any> = await request({
+  const response: AxiosResponse<OrganizationType[]> = await request({
     url: `organization`,
     method: "GET",
   });
-  return response?.data ?? [];
+  return response?.data ?? ({} as OrganizationType);
 };
 
 export const AddOrganizationAPI = async (body: any) => {

@@ -53,7 +53,10 @@ export default function ProductImgSlider({ product, BASE_URL }: Props) {
         style={{ position: "relative", zIndex: 0 }}
       >
         {images.map((img, idx) => (
-          <div key={idx} className="keen-slider__slide flex justify-center">
+          <div
+            key={idx}
+            className="keen-slider__slide flex justify-center ml-1.5"
+          >
             <img
               src={`${BASE_URL}${img}`}
               alt={`product-${idx}`}
